@@ -17,7 +17,9 @@ USE_L10N = True
 
 USE_TZ = False
 
-LOCALE_PATH = [os.path.join(BASE_DIR, '/locale/')]
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -92,6 +94,7 @@ AUTH_PASSWORD_VALIDATORS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

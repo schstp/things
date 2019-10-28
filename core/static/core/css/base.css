@@ -1,0 +1,16 @@
+body {
+    background-color: #f2f5f7;
+}
+
+#main-menu {
+    margin-top: 1.8rem
+}
+
+#main-menu a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.main-menu-font {
+    color: #949494
+}
