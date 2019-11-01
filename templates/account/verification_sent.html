@@ -1,0 +1,38 @@
+{% extends "index.html" %}
+
+{% load static %}
+{% load account %}
+
+{% block extended_head_index %}
+    <link rel="stylesheet" type="text/css" href="{% static 'core/css/alluath_dialogs.css' %} ">
+{% endblock %}
+
+{% block index_extended %}
+    <div id="notification_block_id" class="container">
+        <div class="row justify-content-center">
+            <div id="passwordresetdialog" class="jumbotron col-9 mx-auto">
+                <h1>Verify Your E-mail Address</h1>
+                <hr>
+
+                {% if user.is_authenticated %}
+                    {% include "account/snippets/already_logged_in.html" %}
+                {% endif %}
+
+                <p id="passresintsr">
+                    We have sent an e-mail to you for verification.
+                    Follow the link provided to finalize the signup process.
+                    Please contact us if you do not receive it within a few minutes.
+                </p>
+                <div class="d-flex flex-row-reverse">
+                <button id="close_btn" type="button" class="btn btn-outline-dark">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.getElementById("close_btn").addEventListener("click", function () {
+        $('#notification_block_id').fadeOut(300, function(){ $(this).remove();});
+    });
+    </script>
+{% endblock %}

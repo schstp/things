@@ -1,14 +1,16 @@
-{% load i18n tz static %}
-{% get_current_language as LANGUAGE_CODE %}
+{% load static %}
 
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'core/css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'core/css/base.css' %}">
+
+    {% block extended_head %}
+    {% endblock %}
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -16,33 +18,14 @@
 
     <title>
         {% if title %}
-            {% trans title %}
+            {{ title }}
         {% else %}
             Things
         {% endif %}
     </title>
 </head>
 <body>
-    <div class="container main-menu-font">
-        <div class="row" id="main-menu">
-            <div class="col-auto ml-auto mr-auto">
-                <a class="h5" href="#">Things</a>
-            </div>
-            <div class="col-auto ml-auto">
-                <a class="h6" href="#">What's new?</a>
-            </div>
-            <div class="col-auto">
-                <a class="h6" href="#">Support</a>
-            </div>
-            <div class="col-auto mr-auto">
-                <a class="h6" href="#">Blog</a>
-            </div>
-        </div>
-        <div class="row" style="justify-content: center">
-            <div class="col-lg-9">
-                <hr>
-            </div>
-        </div>
-    </div>
+    {% block content %}
+    {% endblock %}
 </body>
 </html>

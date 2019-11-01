@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+{% load account socialaccount %}
+{% load widget_tweaks %}
+
+{% block extended_head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'core/css/signin-signup.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container h-100">
+        <div class="row align-items-center h-100">
+            <div class="col-lg-5 col-md-8 col-sm-10 mx-auto">
+                <div id="login-form" class="jumbotron">
+                    <div class="row">
+                        <div class="col text-center">
+                            <img id="logo" src="{% static 'core/img/logo.png' %}" alt="logo">
+                            <h3><strong>Things</strong></h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-center">
+                        <p>Do planning with pleasure.</p>
+                        </div>
+                    </div>
+                    <div id="googleref" class="row">
+                        <div class="col text-center">
+
+                            <a class="btn btn-sm btn-outline-dark" href="{% provider_login_url 'google' %}">
+                                <span><img id="google" src="{% static 'core/img/google.png' %}" alt="google"></span>
+                                Continue with Google
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="sep" class="col text-center">
+                        <div class="row">
+                            <div class="col"><hr></div>
+                            <div class="col-auto">or</div>
+                            <div class="col"><hr></div>
+                        </div>
+                        </div>
+                    </div>
+
+                  <form class="login" method="POST" action="{% url 'account_login' %}">
+                      {% csrf_token %}
+
+                      {% for hidden_field in form.hidden_fields %}
+                            {{ hidden_field }}
+                      {% endfor %}
+
+                      {% if form.non_field_errors %}
+                          <div class="alert alert-danger" role="alert">
+                              {% for error in form.non_field_errors %}
+                                {{ error }}
+                              {% endfor %}
+                          </div>
+                      {% endif %}
+
+                      {% for field in form.visible_fields %}
+                          {% if field.name != 'remember' %}
+                            <div class="form-group input-group">
+                                {% if form.is_bound %}
+                                {% if field.errors %}
+                                  {% render_field field class="form-control is-invalid" %}
+                                  {% for error in field.errors %}
+                                    <div class="invalid-feedback">
+                                      {{ error }}
+                                    </div>
+                                  {% endfor %}
+                                {% else %}
+                                  {% render_field field class="form-control is-valid" %}
+                                {% endif %}
+                              {% else %}
+                                {% render_field field class="form-control" %}
+                              {% endif %}
+
+                              {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                              {% endif %}
+                            </div>
+                              {% endif %}
+                      {% endfor %}
+
+
+                      <div class="row">
+                          <div class="col text-center">
+                              <button class="primaryAction btn btn-default btn-success" type="submit"> Sign in </button>
+                          </div>
+                      </div>
+
+                      <div class="row">
+                            <div id="remme" class="col text-center">
+                            <div>{{form.remember}} Remember me</div>
+                            </div>
+                      </div>
+
+                        {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        {% endif %}
+                    </form>
+
+                    <div class="row">
+                        <div id="passres" class="col text-center">
+                            <a class="secondaryAction" href="{% url 'account_reset_password' %}">Forgot Password?</a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div id="regquest" class="col text-center">
+                            <div>Don't have an account?</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div id="cracc" class="col text-center">
+                            <a href="{{ signup_url }}">Create account</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+{% load static %}
+{% load account %}
+
+{% block extended_head_index %}
+    <link rel="stylesheet" type="text/css" href="{% static 'core/css/alluath_dialogs.css' %} ">
+{% endblock %}
+
+{% block index_extended %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div id="passwordresetdialog" class="jumbotron col-9 mx-auto">
+                <h1>Confirm E-mail Address</h1>
+                <hr>
+                {% if confirmation %}
+                    {% user_display confirmation.email_address.user as user_display %}
+                    <p>Please confirm that
+                        <a href="mailto:{{ confirmation.email_address.email }}">
+                            {{ confirmation.email_address.email }}
+                        </a>
+                        is an e-mail address for user {{ user_display }}.</p>
+
+                    <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+                        {% csrf_token %}
+                        <div class="d-flex flex-row-reverse">
+                        <button type="submit" class="btn btn-primary">Confirm</button>
+                        </div>
+                    </form>
+
+                {% else %}
+                    {% url 'account_email' as email_url %}
+                    <p>This e-mail confirmation link expired or is invalid.
+                        Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.</p>
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script>
+    var email_field = document.getElementById('id_email');
+    email_field.className += "form-control";
+    </script>
+{% endblock %}

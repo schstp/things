@@ -1,0 +1,65 @@
+body {
+    background-image: url(../img/login-background.png);
+    background-repeat: repeat;
+    color:black;
+}
+
+#login-form {
+    background-color: white;
+    border-radius: 10px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+h3 {
+    font-size: 2.5em;
+}
+
+a, button {
+    width: 100%;
+}
+
+hr {
+    border-color: gray;
+}
+
+#logo {
+    width: 90px;
+    height: 90px;
+}
+
+#googleref {
+    margin-top: 20px;
+
+}
+
+#google {
+    width: 30px;
+    height: 30px;
+}
+
+#sep {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#id_login, #id_password {
+    width:80%;
+}
+
+#remme {
+    margin-top: 10px;
+}
+
+#passres {
+    margin-top: 10px;
+}
+
+#regquest {
+    margin-top: 20px;
+}
+
+#passres, #regquest, #cracc {
+    font-size: 90%;
+}

@@ -1,0 +1,19 @@
+#passwordresetdialog {
+    background-color: white;
+    color:black;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+#passwordresetdialog h1 {
+    color: #3e87e6;
+}
+
+#passresintsr {
+    font-size: 120%;
+}
+
+#btnResetConf {
+    margin-top: 20px;
+}
