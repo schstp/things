@@ -2,20 +2,20 @@
 
 * **Checkout**:
 	* 1) git clone https://github.com/schstp/things.git ;
-	* 2) git checkout master .
+	* 2) git checkout dev .
+* **Pull**:
+	* 1) git pull .
 * **Push**:
 	* 1) git add * ;
 	* 2) git commit -m "MESSAGE" ;
 	* 3) git push .
-* **Pull**:
-	* 1) git pull .
 * **Create virtual environment**:
 	* 1) install python3 ;
 	* 2) install virtualenvwrapper (https://virtualenvwrapper.readthedocs.org/en/latest/);
-	* 3) create new virtualenv: mkvirtualenv mindmap .
-	* 4) activate virtualenv: workon mindmap .
+	* 3) create new virtualenv: mkvirtualenv things .
+	* 4) activate virtualenv: workon things .
 * **Dependencies**: pip install -r requirements.txt .
-* **Run migrations**: python manage.py migrate mindmap .
+* **Run migrations**: python manage.py migrate .
 * **How to run**: python manage.py runserver .
 
 ### How do I set up the PyCharm? ###

@@ -59,6 +59,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     'core.apps.CoreConfig',
+    'task_manager.apps.TaskManagerConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -81,7 +82,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 AUTH_USER_MODEL = "core.CustomUser"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/calendar/'
 # Redirect to home URL after logout
 LOGOUT_REDIRECT_URL = '/'
 

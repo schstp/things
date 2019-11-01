@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load account %}
+
+{% block content %}
+    <h1>Student task manager web application</h1>
+    <p>You are logged in as {{ user.email }}</p>
+    <ul>
+    <li><a id="logout_link" href="#">Logout</a></li>
+    <li><a href="/">Home page</a></li>
+    </ul>
+
+    {% include 'account/logout_modal.html' %}
+
+    <script>
+    document.getElementById('logout_link').addEventListener('click',function () {
+        $('#logoutModal').modal('show');
+    })
+    </script>
+{% endblock %}
