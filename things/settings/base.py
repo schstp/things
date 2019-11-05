@@ -49,7 +49,6 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'crispy_forms',
     'widget_tweaks',
     'allauth',
     'allauth.account',
