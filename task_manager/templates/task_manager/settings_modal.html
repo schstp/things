@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Page for settings</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-sm">Малое модальное окно</button>
+
+    <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <!--Modal header-->
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Settings</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <!--End of Modal header-->
+          <!--Modal body-->
+          <div class="modal-body">
+            <h6 class="text-center"><label>Event settings</label></h6>
+            <div class="form-group text-center">
+            Default duration
+              <select class="form-control" id="exampleSelect2">
+                <option>15 minutes</option>
+                <option>30 minutes</option>
+                <option>1 hour</option>
+                <option>5 hours</option>
+                <option>10 hours</option>
+              </select>           
+            </div>
+            <div class="form-group text-center">
+            Automatically add invetations
+              <select class="form-control" id="exampleSelect2">
+                <option>Yes</option>
+                <option>No</option>
+              </select>           
+            </div>
+            <div class="form-group text-center">
+            Notifications
+              <select class="form-control" id="exampleSelect2">
+                <option>Email</option>
+                <option>Mobile phone</option>
+              </select>           
+            </div>
+            <h6 class="text-center"><label>View options</label></h6>
+            <div class="form-check">
+            <label class="form-check-label">
+              <input class="form-check-input" type="checkbox" id="blankCheckbox" value="option1"> <label><small>Show week-ends</small></label>
+            </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label"> 
+                <input class="form-check-input" type="checkbox" id="blankCheckbox" value="option2"> <label><small>Reduce the brigitness of past events</small></label>
+              </label>
+            </div>
+             <div class="form-group text-center">
+            Start week on 
+              <select class="form-control" id="exampleSelect2">
+                <option>Monday</option>
+                <option>Sunday</option>
+              </select>           
+            </div>
+            <h6 class="text-center"><label>Study schedule settings</label></h6>
+            <div class="form-control">
+              <label class="custom-file">
+              <input type="file" id="file" class="custom-file-input" placeholder="Drag data here">
+              <span class="custom-file-control"></span>
+              </label>
+            </div>
+            <label><small>*You can import schedule in iCal format</small></label>
+          </div>
+          <!--End ofModal body-->
+          <div class="modal-footer">
+            <button style="margin-right: 25%;" type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Page for users</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+  </head>
+  <body>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-sm">Малое модальное окно</button>
+
+    <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">User profile settings</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-lg-4">
+              <img src="D:\ITUe\HTMLs\Proflie.jpg" class="img-thumbnail">
+            </div>
+            <div class="col-lg-6">
+              <input type="text" name="userName" placeholder="User Name">
+              <input style="margin-top: 20px;" type="text" name="userSurname" placeholder="User Surname">
+            </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                <button style="margin-top: 20px; width: 225%;" type="button" class="btn btn-primary" name="changePhotoButton">Change photo</button> 
+                <button style="margin-top: 20px; width: 225%;" type="button" class="btn btn-primary" name="changePhotoButton">Change Email</button> 
+                <button style="margin-top: 20px; width: 225%;" type="button" class="btn btn-primary" name="changePhotoButton">Change password</button> 
+                <button style="margin-top: 20px; width: 225%;" type="button" class="btn btn-primary" name="changePhotoButton">Log out</button> 
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer"> 
+            <button style="margin-right: 25%;" type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
