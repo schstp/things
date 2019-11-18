@@ -3,18 +3,36 @@
 {% load account %}
 
 {% block content %}
-    <h1>Student task manager web application</h1>
-    <p>You are logged in as {{ user.email }}</p>
-    <ul>
-    <li><a id="logout_link" href="#">Logout</a></li>
-    <li><a href="/">Home page</a></li>
-    </ul>
+    <div class="container-fluid">
+        <div class="row mt-2">
+            <div class="col-1">
+                <input type="image" src="https://img.icons8.com/ios-filled/50/000000/menu.png" height="30"></input>
+            </div>
+            <div class="col">
+                <a class='btn btn-primary btn-sm mx-2' style="color: white; width: 120px; height: 30px;">Today</a>
+            </div>
+            <div class="col">
+                <input type="image" src="https://img.icons8.com/ios/64/000000/circled-chevron-left.png" height="30" ></input>
+                <input type="image" src="https://img.icons8.com/ios/64/000000/circled-chevron-right.png" height="30"></input>
+            </div>
+            <div class="col-2 mt-1">
+                <label class="ml-4" style="color: black;">Current month</label>
+            </div>
 
-    {% include 'account/logout_modal.html' %}
+            <div class="col-3"></div>
+            
+            <div class="col-3 d-flex align-items-stretch px-5">
+                <input class="mx-2" type="image" src="https://img.icons8.com/ios/50/000000/search.png" height="35"></input>
+                <input class="mx-2" type="image" src="https://img.icons8.com/ios/50/000000/settings.png" height="35"></input>
+                <select class="mx-2" style="width: 150px;">
+                    <option>Day</option>
+                    <option>Week</option>
+                    <option>Month</option>
+                    <option>Schedule</option>
+                </select>
+                <input class="mx-2" type="image" src="https://img.icons8.com/ios/50/000000/user-male-circle.png" height="35"></input>
+            </div>
+        </div>
+    </div>
 
-    <script>
-    document.getElementById('logout_link').addEventListener('click',function () {
-        $('#logoutModal').modal('show');
-    })
-    </script>
 {% endblock %}
