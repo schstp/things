@@ -1,0 +1,14 @@
+#transp-button {
+    outline: none; 
+    background-color: transparent; 
+    background-repeat:no-repeat; 
+    border: none; cursor:pointer; 
+    overflow: hidden;
+}
+
+#no-transfer {
+    overflow: hidden; 
+    position: relative;
+    display:inline-block; 
+    white-space:nowrap;
+}
