@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 
+
 {% load account %}
 
 {% block content %}
+{% include 'user_profile.html' %}
     <div class="container-fluid" id="no-transfer">
         <div class="row mt-2">
             <div class="col-1" id="no-transfer">
@@ -30,9 +32,17 @@
                     <option>Month</option>
                     <option>Schedule</option>
                 </select>
-                <button id="transp-button"><img src="https://img.icons8.com/ios/50/000000/user-male-circle.png" height="30" width="30"></img></button>
+                <!-- <script type="text/javascript">
+                	function callSettingsModal() {
+                		var modal = user_profile.html;
+                		$('body').append(modal);
+                	}
+                	$('button').on('click', modal);
+                </script> -->
+                	<a data-toggle="modal" href="user_profile.html" data-target="#userModal" data-backdrop="static" id="transp-button" onclick="callSettingsModal()"><img src="https://img.icons8.com/ios/50/000000/user-male-circle.png" height="30" width="30"></img></button>
             </div>
         </div>
     </div>
+
 
 {% endblock %}

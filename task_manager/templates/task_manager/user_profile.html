@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Page for users</title>
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.css" rel="stylesheet">
-  </head>
-  <body>
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+{% extends 'base.html' %}
 
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-sm">Малое модальное окно</button>
 
-    <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+{% load account %}
+
+{% block content %}
+
+    <div class="modal fade userModal" id="userModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
@@ -23,11 +17,11 @@
           <div class="modal-body">
             <div class="row">
               <div class="col-lg-4">
-              <img src="D:\ITUe\HTMLs\Proflie.jpg" class="img-thumbnail">
+              <img style="width: 200%; height: 100%;" src="https://img.icons8.com/ios/50/000000/user-male-circle.png" class="img-thumbnail">
             </div>
             <div class="col-lg-6">
-              <input type="text" name="userName" placeholder="User Name">
-              <input style="margin-top: 20px;" type="text" name="userSurname" placeholder="User Surname">
+              <input style="width: 140%;" type="text" name="userName" placeholder="User Name">
+              <input style="margin-top: 20px; width: 140%;" type="text" name="userSurname" placeholder="User Surname">
             </div>
             </div>
             <div class="row">
@@ -45,5 +39,4 @@
         </div>
       </div>
     </div>
-  </body>
-</html>
+{% endblock %}
