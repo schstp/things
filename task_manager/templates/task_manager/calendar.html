@@ -5,6 +5,7 @@
 
 {% block content %}
 {% include 'user_profile.html' %}
+{% include 'settings_modal.html' %}
     <div class="container-fluid" id="no-transfer">
         <div class="row mt-2">
             <div class="col-1" id="no-transfer">
@@ -25,21 +26,14 @@
             
             <div class="col-3 d-flex align-items-stretch px-5" id="no-transfer">
                 <button id="transp-button"><img src="https://img.icons8.com/ios/50/000000/search.png" height="30" width="30"></img></button>
-                <button id="transp-button"><img src="https://img.icons8.com/ios/50/000000/settings.png" height="30" width="30"></img></button>
+                <a data-toggle="modal" href="settings_modal.html" data-target="#settingsModal" data-backdrop="static" id="transp-button"><img src="https://img.icons8.com/ios/50/000000/settings.png" height="30" width="30"></img></button>
                 <select class="mx-2" style="width: 150px;">
                     <option>Day</option>
                     <option>Week</option>
                     <option>Month</option>
                     <option>Schedule</option>
                 </select>
-                <!-- <script type="text/javascript">
-                	function callSettingsModal() {
-                		var modal = user_profile.html;
-                		$('body').append(modal);
-                	}
-                	$('button').on('click', modal);
-                </script> -->
-                	<a data-toggle="modal" href="user_profile.html" data-target="#userModal" data-backdrop="static" id="transp-button" onclick="callSettingsModal()"><img src="https://img.icons8.com/ios/50/000000/user-male-circle.png" height="30" width="30"></img></button>
+                	<a data-toggle="modal" href="user_profile.html" data-target="#userModal" data-backdrop="static" id="transp-button"><img src="https://img.icons8.com/ios/50/000000/user-male-circle.png" height="30" width="30"></img></button>
             </div>
         </div>
     </div>
