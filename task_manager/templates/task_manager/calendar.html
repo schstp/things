@@ -1,30 +1,41 @@
 {% extends 'base.html' %}
 
 {% load account %}
+{% load static %}
+
+{% block extended_head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'calendar/css/calendar.css' %}">
+{% endblock %}
 
 {% block content %}
-    <div class="container-fluid" id="no-transfer">
-        <div class="row mt-2">
-            <div class="col-1" id="no-transfer">
+    <div class="container-fluid py-2 w-100" id="no-transfer" style="border-bottom-style: outset;">
+        
+            <!--MENU BUTTON-->
+            <div class="col-1 col-md-1 col-lg-1 col-xl-1 w-100" id="no-transfer">
                 <button id="transp-button"><img src="https://img.icons8.com/ios-filled/50/000000/menu.png" height="30" width="30"></img></button>
             </div>
-            <div class="col" id="no-transfer">
-                <a class='btn btn-primary btn-sm mx-2' style="color: white; width: 120px; height: 30px;">Today</a>
+
+            <!--TODAY BUTTON-->
+            <div class="d-none col-sm-2 d-sm-none col-md-2 d-md-inline-block 
+            col-lg-2 d-lg-inline-block col-xl-2 d-xl-inline-block w-50" id="no-transfer">
+                <a class='btn btn-primary btn-sm mx-2 w-20' style="color: white; width: 80px; height: 100%; line-height: 25px;">Today</a>
             </div>
-            <div class="col" id="no-transfer">
+
+            <!--ARROWS BUTTON-->
+            <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 w-100" id="no-transfer">
                 <button id="transp-button"><img src="https://img.icons8.com/ios/64/000000/circled-chevron-left.png" height="30" width="30"></img></button>
                 <button id="transp-button"><img src="https://img.icons8.com/ios/64/000000/circled-chevron-right.png" height="30" width="30"></img></button>
             </div>
-            <div class="col-2 mt-1" id="no-transfer">
-                <label class="ml-4" style="color: black;">Current month</label>
+
+            <!--DATE LABEL-->
+            <div class="d-none d-sm-none col-md-2 d-md-inline-block col-lg-2 d-lg-inline-block col-xl-2 d-xl-inline-block w-100" id="no-transfer">
+                <label style="color: black; margin-top: 5px; margin-bottom: 5px;">Current month</label>
             </div>
 
-            <div class="col-3" id="no-transfer"></div>
-            
-            <div class="col-3 d-flex align-items-stretch px-5" id="no-transfer">
+            <div class="col-4 col-sm-4 col-md-4 col-lg-8 col-xl-8 w-100 d-inline-block justify-content-right" id="no-transfer">
                 <button id="transp-button"><img src="https://img.icons8.com/ios/50/000000/search.png" height="30" width="30"></img></button>
                 <button id="transp-button"><img src="https://img.icons8.com/ios/50/000000/settings.png" height="30" width="30"></img></button>
-                <select class="mx-2" style="width: 150px;">
+                <select class="" style="width: 150px; align-self: baseline; padding-top: 0px;">
                     <option>Day</option>
                     <option>Week</option>
                     <option>Month</option>
@@ -33,6 +44,5 @@
                 <button id="transp-button"><img src="https://img.icons8.com/ios/50/000000/user-male-circle.png" height="30" width="30"></img></button>
             </div>
         </div>
-    </div>
 
 {% endblock %}
