@@ -13,3 +13,38 @@
     white-space: nowrap;
     min-width: min-content;
 }
+
+.wrapper {
+    display: flex;
+    width: 100%;
+}
+
+#sidebar {
+    width: 270px;
+
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
+    background: #f2f0f0;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+#sidebar.active {
+    margin-left: -270px;
+}
+
+      #content {
+    width: calc(100% - 270px);
+    padding: 40px;
+    min-height: 100vh;
+    transition: all 0.3s;
+
+    top: 0;
+    right: 0;
+}
+
+#content.active {
+    width: 100%;
+}
