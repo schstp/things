@@ -11,11 +11,11 @@
 {% block content %}
 {% include 'user_profile.html' %}
 {% include 'settings_modal.html' %}
-    <div class="container-fluid py-2 w-100" id="no-transfer" style="border-bottom-style: outset;">
+    <div class="container-fluid py-2 w-100 no-transfer" style="border-bottom-style: outset;">
         
             <!--MENU BUTTON-->
-            <div class="col-1 col-md-1 col-lg-1 col-xl-1 w-100" id="no-transfer">
-                <button id="transp-button"><img src="https://img.icons8.com/ios-filled/50/000000/menu.png" height="30" width="30"></img></button>
+            <div class="col-1 col-md-1 col-lg-1 col-xl-1 w-100 ">
+                <button id="transp-button"><img alt="menu-icon" src="https://img.icons8.com/ios-filled/50/000000/menu.png" height="30" width="30"></button>
             </div>
 
             <!--TODAY BUTTON-->
@@ -26,8 +26,8 @@
 
             <!--ARROWS BUTTON-->
             <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 w-100" id="no-transfer">
-                <button id="transp-button"><img src="https://img.icons8.com/ios/64/000000/circled-chevron-left.png" height="30" width="30"></img></button>
-                <button id="transp-button"><img src="https://img.icons8.com/ios/64/000000/circled-chevron-right.png" height="30" width="30"></img></button>
+                <button id="transp-button"><img alt="left-arrow" src="https://img.icons8.com/ios/64/000000/circled-chevron-left.png" height="30" width="30"></button>
+                <button id="transp-button"><img alt="right-arrow" src="https://img.icons8.com/ios/64/000000/circled-chevron-right.png" height="30" width="30"></button>
             </div>
 
             <!--DATE LABEL-->
@@ -36,18 +36,18 @@
             </div>
 
             <div class="col-4 col-sm-4 col-md-4 col-lg-8 col-xl-8 w-100 d-inline-block justify-content-right" id="no-transfer">
-                <button id="transp-button"><img src="https://img.icons8.com/ios/50/000000/search.png" height="30" width="30"></img></button>
+                <button id="transp-button"><img alt="search-icon" src="https://img.icons8.com/ios/50/000000/search.png" height="30" width="30"></button>
                 <a data-toggle="modal" href="settings_modal.html" data-target="#settingsModal" data-backdrop="static" id="transp-button">
-                    <img src="https://img.icons8.com/ios/50/000000/settings.png" height="30" width="30"></img>
+                    <img alt="settings-icon" src="https://img.icons8.com/ios/50/000000/settings.png" height="30" width="30">
                 </a>
-                <select class="" style="width: 150px; align-self: baseline; padding-top: 0px;">
+                <select class="" style="width: 150px; align-self: baseline; padding-top: 0;">
                     <option>Day</option>
                     <option>Week</option>
                     <option>Month</option>
                     <option>Schedule</option>
                 </select>
                 <a data-toggle="modal" href="user_profile.html" data-target="#userModal" data-backdrop="static" id="transp-button">
-                    <img src="https://img.icons8.com/ios/50/000000/user-male-circle.png" height="30" width="30"></img>
+                    <img alt="user-icon" src="https://img.icons8.com/ios/50/000000/user-male-circle.png" height="30" width="30">
                 </a>
             </div>
         </div>
