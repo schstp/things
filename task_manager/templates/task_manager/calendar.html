@@ -6,83 +6,97 @@
 
 {% block extended_head %}
     <link rel="stylesheet" type="text/css" href="{% static 'calendar/css/calendar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'calendar/css/week_view.css' %}">
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script type="text/javascript" src="{% static 'calendar/js/main.js' %}"></script>
+    <script type="text/javascript" src="{% static 'calendar/js/week_view.js' %}"></script>
+    <script type="text/javascript" src="{% static 'calendar/js/view_manager.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 
-    <div class="container-fluid py-2 w-100 no-transfer" style="border-bottom-style: outset;">
-        
-            <!--MENU BUTTON-->
-            <div class="col-1 col-md-1 col-lg-1 col-xl-1 w-100 ">
-                <button id="transp-button"><img alt="menu-icon" src="https://img.icons8.com/ios-filled/50/000000/menu.png" height="30" width="30"></button>
+    <div class="wrapper">
+
+        <!-- navbar -->
+        <nav class="top-bar">
+
+            <!-- fixed navbar section -->
+            <div class="navbar-fixed-section-wrapper">
+
+                <!-- collapse sidebar button container -->
+                <div class="collapse-button-container">
+                    <button class="transp-button" id="sidebarCollapse">
+                        <ion-icon class="icons" name="menu"></ion-icon>
+                    </button>
+                </div>
+
+                <!--TODAY button container -->
+                <div class="today-button-container">
+                    <button class="btn btn-outline-secondary">Today</button>
+                </div>
+
+                <!--VIEW SCROLL buttons container -->
+                <div class="viewscroll-buttons-container">
+                    <button class="transp-button">
+                        <ion-icon class="icons" name="ios-arrow-back"></ion-icon>
+                    </button>
+                    <button class="transp-button">
+                        <ion-icon class="icons" name="ios-arrow-forward"></ion-icon>
+                    </button>
+                </div>
+
+                <!--data label container -->
+                <div class="date-label-container">
+                    <label id="dateInfo">November 2019</label>
+                </div>
+
             </div>
 
-            <!--TODAY BUTTON-->
-            <div class="d-none col-sm-2 d-sm-none col-md-2 d-md-inline-block 
-            col-lg-2 d-lg-inline-block col-xl-2 d-xl-inline-block w-50" id="no-transfer">
-                <a class='btn btn-primary btn-sm mx-2 w-20' style="color: white; width: 80px; height: 100%; line-height: 25px;">Today</a>
-            </div>
+            <!-- flexible navbar section -->
+            <div class="navbar-fixible-section-wrapper">
 
-            <!--ARROWS BUTTON-->
-            <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 w-100" id="no-transfer">
-                <button id="transp-button"><img alt="left-arrow" src="https://img.icons8.com/ios/64/000000/circled-chevron-left.png" height="30" width="30"></button>
-                <button id="transp-button"><img alt="right-arrow" src="https://img.icons8.com/ios/64/000000/circled-chevron-right.png" height="30" width="30"></button>
-            </div>
+                <!-- search button -->
+                <button class="transp-button">
+                    <ion-icon class="icons" name="ios-search"></ion-icon>
+                </button>
 
-            <!--DATE LABEL-->
-            <div class="d-none d-sm-none col-md-2 d-md-inline-block col-lg-2 d-lg-inline-block col-xl-2 d-xl-inline-block w-100" id="no-transfer">
-                <label style="color: black; margin-top: 5px; margin-bottom: 5px;">Current month</label>
-            </div>
+                <!-- settings button -->
+                <button data-toggle="modal" data-target="#settingsModal" data-backdrop="static" class="transp-button">
+                    <ion-icon class="icons" name="ios-cog"></ion-icon>
+                </button>
 
-            <div class="col-4 col-sm-4 col-md-4 col-lg-8 col-xl-8 w-100 d-inline-block justify-content-right" id="no-transfer">
-
-                <button id="transp-button"><img alt="search-icon" src="https://img.icons8.com/ios/50/000000/search.png" height="30" width="30"></button>
-                <a data-toggle="modal" href="settings_modal.html" data-target="#settingsModal" data-backdrop="static" id="transp-button">
-                    <img alt="settings-icon" src="https://img.icons8.com/ios/50/000000/settings.png" height="30" width="30">
-                </a>
-                <select class="" style="width: 150px; align-self: baseline; padding-top: 0;">
-                    <option>Day</option>
-                    <option>Week</option>
-                    <option>Month</option>
-                    <option>Schedule</option>
+                <!-- view selector -->
+                <select id="viewSelector">
+                    <option value="0">Day</option>
+                    <option value="1" selected>Week</option>
+                    <option value="2">Month</option>
+                    <option value="3">Schedule</option>
                 </select>
 
-                <a data-toggle="modal" href="user_profile.html" data-target="#userModal" data-backdrop="static" id="transp-button">
-                    <img alt="user-icon" src="https://img.icons8.com/ios/50/000000/user-male-circle.png" height="30" width="30">
-                </a>
+                <!-- user profile settings button -->
+                <button data-toggle="modal" data-target="#userModal" data-backdrop="static" class="transp-button">
+                    <ion-icon class="icons" name="ios-contact"></ion-icon>
+                </button>
 
             </div>
+
+        </nav>
+
+        <!-- working area -->
+        <div class="working-area-wrapper">
+
+            <!-- left bar -->
+            <nav id="sidebar"></nav>
+
+            <!-- current view display -->
+            <div id="content"></div>
+
         </div>
 
-    <div class="wrapper">
-    	<nav id="sidebar"></nav>
-
-    	<div id="content">
-    		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    			<div class="container-fluid">
-    				
-    			</div>
-    		</nav>
-    	</div>   	
     </div>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-
-
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar, #content').toggleClass('active');
-            });
-        });
-    </script>
-
-
-{% include 'user_profile.html' %}
-{% include 'settings_modal.html' %}
+    <!-- modal windows appending -->
+    {% include 'user_profile.html' %}
+    {% include 'settings_modal.html' %}
 
 {% endblock %}

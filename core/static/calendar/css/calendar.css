@@ -1,32 +1,71 @@
-.transp-button {
-    outline: none;
-    background-color: transparent; 
-    border: none; 
-    cursor:pointer; 
-    overflow: hidden;
-}
-
-.no-transfer {
-    width: min-content;
-    position: relative;
-    display: inline-block; 
-    white-space: nowrap;
-    min-width: min-content;
-}
-
 .wrapper {
     display: flex;
+    flex-flow: column;
+    min-width:1064px;
+    height: calc(100vh - 60px);
+}
+
+.working-area-wrapper {
+    display: flex;
+    height: 100%;
+}
+
+.top-bar {
+    display: flex;
+    flex-flow: row;
+    height: 60px;
+    padding: 10px;
+    border-bottom: solid gray 1px;
+}
+
+.navbar-fixed-section-wrapper {
+    display: flex;
+    width:670px;
+}
+
+.navbar-fixible-section-wrapper {
     width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.collapse-button-container {
+    width: 35px;
+    display: flex;
+}
+
+.today-button-container {
+    width: 225px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.today-button-container button {
+    width: 140px;
+}
+
+.viewscroll-buttons-container {
+    width: 150px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.date-label-container {
+    width: 250px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+select {
+    width: 120px;
+    margin: 0 40px 0 15px;
 }
 
 #sidebar {
     width: 270px;
-
-    top: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 999;
-    background: #f2f0f0;
+    padding: 5px;
+    z-index: 1;
+    background: #d7dae0;
     color: #fff;
     transition: all 0.3s;
 }
@@ -35,16 +74,38 @@
     margin-left: -270px;
 }
 
-      #content {
+#content {
+    display: flex;
+    flex-flow: column;
     width: calc(100% - 270px);
-    padding: 40px;
-    min-height: 100vh;
+    padding: 5px;
+    background-color: white;
     transition: all 0.3s;
-
-    top: 0;
-    right: 0;
 }
 
 #content.active {
     width: 100%;
+}
+
+.icons {
+    height: 35px;
+    width: 35px;
+}
+
+#dateInfo {
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 1.2em;
+    color: black;
+}
+
+.transp-button {
+    background-color: transparent;
+    border: none;
+    cursor:pointer;
+}
+
+.no-transfer {
+    width: min-content;
+    display: inline-block;
 }

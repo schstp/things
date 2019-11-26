@@ -1,10 +1,19 @@
 html, body {
     height: 100%;
 }
+
 body {
     background-color: #f2f5f7;
-    font-family: Helvetic, Verdana, Arial, sans-serif;
+    font-family: Roboto, Helvetic, Verdana, Arial, sans-serif;
     color: #949494;
+}
+
+button:focus {
+    outline: 0;
+}
+
+select:focus {
+    outline: 0;
 }
 
 #main-menu {

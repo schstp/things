@@ -1,0 +1,83 @@
+.week-view-header {
+    margin-left: 60px;
+    display: flex;
+    flex-flow: row;
+    height: 8%;
+}
+
+.week-view-body {
+    display: flex;
+    flex-flow: row;
+    overflow-y: scroll;
+    height: 92%;
+}
+
+.timeline {
+    display: flex;
+    flex-flow: column;
+    height: 1200px;
+    width: 60px;
+    border-right: solid #bebebe 1px;
+}
+
+.week-view-body-col {
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    height: 1200px;
+    border-right: solid #bebebe 1px;
+}
+
+.week-view-header-item {
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    border-bottom: solid #bebebe 1px;
+    text-align: center;
+    justify-content: center;
+}
+
+.timeline-item {
+    display: flex;
+    flex-flow: column;
+    height: 50px;
+    text-align: center;
+    justify-content: flex-end;
+    font-size: 0.7em;
+}
+
+.time-section {
+    height: 50px;
+    display: flex;
+    flex-flow: column;
+    border-bottom: solid #bebebe 1px;
+}
+
+.quarter-of-an-hour {
+    display: flex;
+    height: 100%;
+}
+
+.week-view-header-item> p {
+    margin: auto 0;
+}
+
+.week-view-header-item > span {
+    width: 42px;
+    height: 42px;
+    margin: 0 auto auto;
+    font-weight: bold;
+    font-size: 1.3em;
+    color: #6e6e6e;
+}
+
+.week-view-header-item > span.td {
+    border: solid black 1px;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.selectee {
+    background-color: red;
+}
+
