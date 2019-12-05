@@ -10,6 +10,7 @@
 
     <script type="text/javascript" src="{% static 'calendar/js/main.js' %}"></script>
     <script type="text/javascript" src="{% static 'calendar/js/week_view.js' %}"></script>
+    <script type="text/javascript" src="{% static 'calendar/js/day_view.js' %}"></script>
     <script type="text/javascript" src="{% static 'calendar/js/view_manager.js' %}"></script>
 {% endblock %}
 
@@ -37,17 +38,17 @@
 
                 <!--VIEW SCROLL buttons container -->
                 <div class="viewscroll-buttons-container">
-                    <button class="transp-button">
+                    <button id="moveBack" class="transp-button">
                         <ion-icon class="icons" name="ios-arrow-back"></ion-icon>
                     </button>
-                    <button class="transp-button">
+                    <button id="moveForward" class="transp-button">
                         <ion-icon class="icons" name="ios-arrow-forward"></ion-icon>
                     </button>
                 </div>
 
                 <!--data label container -->
                 <div class="date-label-container">
-                    <label id="dateInfo">November 2019</label>
+                    <label id="dateInfo"></label>
                 </div>
 
             </div>
@@ -84,12 +85,15 @@
 
         <!-- working area -->
         <div class="working-area-wrapper">
-
+            {% csrf_token %}
             <!-- left bar -->
             <nav id="sidebar"></nav>
 
             <!-- current view display -->
-            <div id="content"></div>
+            <div id="content">
+
+
+            </div>
 
         </div>
 

@@ -1,6 +1,6 @@
 'use strict';
 
-function buildWeekViewHeader(headerID, baseDate) {
+function buildDayViewHeader(headerID) {
 
     // view header initialization
     let viewHeader = document.createElement('div');
@@ -8,31 +8,21 @@ function buildWeekViewHeader(headerID, baseDate) {
     viewHeader.classList.add('view-header');
 
     //view header building
-    let weekInfo = getWeekInfo(baseDate);
-    setHeaderDateInfo(weekInfo.weekFirstDate, weekInfo.weekLastDate);
+    let headerItem = document.createElement('div');
+    headerItem.classList.add('view-header-item');
+    headerItem.appendChild(document.createElement('p'));
+    headerItem.firstChild.innerText = window.WEEK_DAYS[0];
+    headerItem.appendChild(document.createElement('span'));
+    headerItem.lastChild.innerText = "d"; // TEMP
 
-    for (let i = 0; i < 7; i++) {
-        let headerItem = document.createElement('div');
-        headerItem.classList.add('view-header-item');
-        headerItem.appendChild(document.createElement('p'));
-        headerItem.firstChild.innerText = WEEK_DAYS[i];
-        headerItem.appendChild(document.createElement('span'));
-        headerItem.lastChild.innerText = weekInfo.currWeekDates[i].getDate(); // TEMP
+    headerItem.lastChild.classList.add('td'); //temp !!!
 
-        if (weekInfo.currWeekDates[i].getDate() === CURRENT_DATE.getDate() &&
-            weekInfo.currWeekDates[i].getMonth() === CURRENT_DATE.getMonth() &&
-            weekInfo.currWeekDates[i].getFullYear() === CURRENT_DATE.getFullYear()) {
-
-            headerItem.lastChild.classList.add('td');
-
-        } // mark current date
-        viewHeader.appendChild(headerItem);
-    }
+    viewHeader.appendChild(headerItem);
 
     return viewHeader;
 }
 
-function buildWeekViewBody(viewBodyID, baseDate) {
+function buildDayViewBody(viewBodyID) {
 
     // view body and view timeline initialization
     let viewBody = document.createElement('div');
@@ -47,7 +37,7 @@ function buildWeekViewBody(viewBodyID, baseDate) {
         let timeline_item = document.createElement('div');
         timeline_item.classList.add('timeline-item');
         timeline_item.appendChild(document.createElement('span'));
-        timeline_item.firstChild.innerHTML = TIMESTAMPS[i];
+        timeline_item.firstChild.innerHTML = window.TIMESTAMPS[i];
         viewTimeline.appendChild(timeline_item);
     }
 
@@ -55,20 +45,16 @@ function buildWeekViewBody(viewBodyID, baseDate) {
     viewBody.appendChild(viewTimeline);
 
     // view body building
-    for (let i = 0; i < 7; i++) {
-        let week_day = document.createElement('div');
-        week_day.classList.add('week-view-body-col');
-        viewBody.appendChild(week_day);
-    }
+    let week_day = document.createElement('div');
+    week_day.classList.add('day-view-body-col');
+    viewBody.appendChild(week_day);
 
     return viewBody;
 }
 
-function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDate) {
-    let baseDateCopy = new Date();
-    baseDateCopy.setTime(baseDate.getTime());
-    let viewHeader = buildWeekViewHeader(weekViewHeaderID, baseDateCopy);
-    let viewBody = buildWeekViewBody(weekViewBodyID, baseDateCopy);
+function buildDayView (parentElement, dayViewHeaderID, dayViewBodyID) {
+    let viewHeader = buildDayViewHeader(dayViewHeaderID);
+    let viewBody = buildDayViewBody(dayViewBodyID);
 
     parentElement.appendChild(viewHeader);
     parentElement.appendChild(viewBody);
@@ -81,18 +67,18 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
     var newEvent, eventStartPoint, prevY, topPanelHeight, scrollTopPos, scrollTopPos_delta;
 
 
-    $('.week-view-body-col').on({
+    $('.day-view-body-col').on({
         mousedown: function (event) {
-            if (event.target.className === 'week-view-body-col') {
+            if (event.target.className === 'day-view-body-col') {
                 if (event.which === 1) {
 
                     isMousedown = true;
                     prevY = event.pageY; // aux.variable for identifying mouse movement direction
-                    eventStartPoint = Math.round(event.offsetY / TIME_STEP) * TIME_STEP; // event start point (always starts from the point that is multiple of 15 min)
+                    eventStartPoint = Math.round(event.offsetY / window.TIME_STEP) * window.TIME_STEP; // event start point (always starts from the point that is multiple of 15 min)
                     topPanelHeight = event.pageY - eventStartPoint; // have to consider the offset of working area
 
                     // scrolling offset
-                    scrollTopPos = document.getElementById('weekViewBody').scrollTop;
+                    scrollTopPos = document.getElementById('dayViewBody').scrollTop;
                     scrollTopPos_delta = 0;
 
                     // new DOM item
@@ -113,21 +99,6 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
                 newEvent.style.opacity = 1;
 
                 isMousedown = false;
-
-                $.ajax({
-                    type: 'POST',
-                    url: 'add_new_event/',
-                    data: {
-                        csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
-                        test_data: newEvent.style.top,
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data.flag) {
-                            alert('SUCCESS!');
-                        }
-                    }
-                })
             } // the mousedown event was generated in free working area
         },
         mousemove: function (event) {
@@ -135,7 +106,7 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
             if (isMousedown) {
                 if (Math.abs(prevY - event.pageY) >= TIME_STEP) {
 
-                    scrollTopPos_delta = document.getElementById('weekViewBody').scrollTop - scrollTopPos;
+                    scrollTopPos_delta = document.getElementById('dayViewBody').scrollTop - scrollTopPos;
 
                     if (event.pageY + scrollTopPos_delta - topPanelHeight > eventStartPoint) {
 

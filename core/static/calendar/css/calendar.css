@@ -53,7 +53,6 @@
 .date-label-container {
     width: 250px;
     display: flex;
-    justify-content: flex-end;
 }
 
 select {
@@ -95,7 +94,8 @@ select {
 #dateInfo {
     margin-top: auto;
     margin-bottom: auto;
-    font-size: 1.2em;
+    margin-left: 30px;
+    font-size: 1.4em;
     color: black;
 }
 

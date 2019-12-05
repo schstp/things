@@ -1,11 +1,11 @@
-.week-view-header {
+.view-header {
     margin-left: 60px;
     display: flex;
     flex-flow: row;
     height: 8%;
 }
 
-.week-view-body {
+.view-body {
     display: flex;
     flex-flow: row;
     overflow-y: scroll;
@@ -15,20 +15,28 @@
 .timeline {
     display: flex;
     flex-flow: column;
-    height: 1200px;
-    width: 60px;
+    height: 1440px;
+    width: 63px;
     border-right: solid #bebebe 1px;
 }
 
 .week-view-body-col {
-    flex: 1;
-    display: flex;
-    flex-flow: column;
-    height: 1200px;
+    width: 14.3%;
+    position: relative;
+    height: 1440px;
     border-right: solid #bebebe 1px;
+    border-bottom: solid #bebebe 1px;
 }
 
-.week-view-header-item {
+.day-view-body-col {
+    position: relative;
+    height: 1440px;
+    width: 100%;
+    border-right: solid #bebebe 1px;
+    border-bottom: solid #bebebe 1px;
+}
+
+.view-header-item {
     flex: 1;
     display: flex;
     flex-flow: column;
@@ -38,11 +46,32 @@
 }
 
 .timeline-item {
-    display: flex;
-    flex-flow: column;
-    height: 50px;
+    position: relative;
+    height: 60px;
     text-align: center;
-    justify-content: flex-end;
+
+}
+
+.timeline-item::after {
+    content: '';
+    display: block;
+    width: calc(100vw - 350px);
+    height: 1px;
+    background: #bebebe;
+    position: absolute;
+    top: 100%;
+    left: 55px;
+    transition: all 0.3s;
+}
+
+.timeline-item.act::after {
+    width: calc(100vw - 80px);
+}
+
+.timeline-item span {
+    position: absolute;
+    top: 83%;
+    right: 25%;
     font-size: 0.7em;
 }
 
@@ -53,16 +82,11 @@
     border-bottom: solid #bebebe 1px;
 }
 
-.quarter-of-an-hour {
-    display: flex;
-    height: 100%;
-}
-
-.week-view-header-item> p {
+.view-header-item > p {
     margin: auto 0;
 }
 
-.week-view-header-item > span {
+.view-header-item > span {
     width: 42px;
     height: 42px;
     margin: 0 auto auto;
@@ -71,13 +95,22 @@
     color: #6e6e6e;
 }
 
-.week-view-header-item > span.td {
+.view-header-item > span.td {
     border: solid black 1px;
     border-radius: 50%;
     padding: 5px;
 }
 
-.selectee {
-    background-color: red;
+.event {
+    display: flex;
+    position: absolute;
+    width: 99%;
+    opacity: 0.6;
+    background-color: #009BDF;
+    border-left: solid #7587C7 3px;
+    margin-left: 2px;
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+
 }
 
