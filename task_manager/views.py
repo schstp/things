@@ -21,8 +21,11 @@ def calendar(request):
 
 
 def add_new_event(request):
-    print(request.POST.get('start_date')[5:25])
-    print(request.POST.get('end_date')[5:25])
+    start_date = datetime.strptime(request.POST.get('start_date')[5:25], "%b %d %Y %H:%M:%S")
+    end_date = datetime.strptime(request.POST.get('end_date')[5:25], "%b %d %Y %H:%M:%S")
+    new_event = Event.objects.create(start_date=start_date, end_date=end_date ,user= request.user)
+    new_event.save()
+
     data = {
         'flag':True,
     }
@@ -52,7 +55,6 @@ def get_events(request):
 def get_event(request):
     user = request.user
     parsed_date = datetime.strptime(json.loads(request.GET.get('date'))[4:15], "%b %d %Y")
-    print(parsed_date)
     events = list(Event.objects.filter(user=user, start_date__date=parsed_date.date()))
     data = {'events': []}
 
@@ -65,5 +67,5 @@ def get_event(request):
             'importance': event.importance,
             'color': event.color,
         })
-    print(data)
+
     return JsonResponse(data)

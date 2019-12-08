@@ -60,6 +60,69 @@ select {
     margin: 0 40px 0 15px;
 }
 
+.createEventButton {
+    margin-left: 7%; 
+    margin-top: 3%; 
+    width: 85%;
+    outline: none;
+}
+
+.inboxOuterBorder {
+    border-style: solid; 
+    border-color: #000; 
+    margin-top: 3%; 
+    width: 85%; 
+    margin-left: 7%;
+}
+
+.inboxLabelContainer {
+    height: 40px; 
+    background-color: #c2c2c2;
+}
+
+.inboxLabel {
+    color: black; 
+    margin-left: 150%;
+}
+
+#addTask {
+    margin-top: 3%; 
+    margin-left: 7%; 
+    height: 35px; 
+    border: 0; 
+    background-color: transparent;
+    outline: none;
+}
+
+#taskName {
+    width: 78%;
+    outline: none;
+}
+
+#taskInbox {
+    margin-top: 0;
+    width: 100%; 
+    height: 47vh;
+    overflow-y: scroll;
+    
+}
+
+#inboxTask {
+    margin-left: -3vh;
+    width: 112%;
+    word-wrap: break-word;
+}
+
+#deleteTask {
+    outline: none;
+    border: 0; 
+    background-color: transparent;
+    padding: 0;
+    margin-left: 16px;
+    height: 18px;
+    width: 18px;
+}
+
 #sidebar {
     width: 270px;
     padding: 5px;
@@ -126,4 +189,82 @@ select {
 
 #saveEventBtn {
     width: 100px;
+}
+
+#calendar2 {
+  width: 85%;
+  line-height: 1.2em;
+  font-size: 15px;
+  text-align: center;
+  border-style: solid;
+  border-color: #000;
+  margin-top: 3%;
+  margin-left: 7%;
+}
+
+#calendar2:hover {
+    cursor: pointer;
+}
+#calendar2 thead tr:last-child {
+  font-size: small;
+  color: rgb(85, 85, 85);
+  background-color: #c2c2c2;
+}
+#calendar2 thead tr:nth-child(1) td:nth-child(2) {
+  color: rgb(50, 50, 50);
+  background-color: #757575;
+}
+#calendar2 thead tr:nth-child(1) td:nth-child(1):hover, #calendar2 thead tr:nth-child(1) td:nth-child(3):hover {
+  cursor: pointer;
+  color: #000;
+}
+#calendarArrow {
+    color: #000;
+    background-color: #757575;
+}
+#calendar2 tbody td {
+    color: #000;
+}
+#calendar2 tbody td:nth-child(n+6), #calendar2 .holiday {
+    color: #000;
+}
+#calendar2 tbody td.today {
+    background: rgb(0, 11, 255);
+    color: #fff;
+}
+#calendar2 tbody td.selected {
+    background: #000;
+    color: #fff;
+}
+
+::-webkit-scrollbar-button {
+    background-image:url('');
+    background-repeat:no-repeat;
+    width:5px;
+    height:0;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #ecedee
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    background-color: #c2c2c2;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background-color: #757575;
+}
+
+::-webkit-resizer{
+    background-image: url('');
+    background-repeat: no-repeat;
+    width: 4px;
+    height: 0;
+}
+
+::-webkit-scrollbar{
+    width: 4px;
 }

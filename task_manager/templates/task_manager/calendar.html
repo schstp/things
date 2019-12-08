@@ -16,6 +16,7 @@
 
 {% block content %}
 
+
     <div class="wrapper">
 
         <!-- navbar -->
@@ -87,7 +88,27 @@
         <div class="working-area-wrapper">
             {% csrf_token %}
             <!-- left bar -->
-            <nav id="sidebar"></nav>
+            <nav id="sidebar">
+                <button class="btn btn-outline-dark createEventButton">+Create Event</button>
+                <div id="calendar"></div>
+                <table id="calendar2">
+                    <thead>
+                    <tr><td id="calendarArrow">‹<td id="dateHeader" colspan="5"><td id="calendarArrow">›
+                    <tr><td>Mo<td>Tu<td>We<td>Th<td>Fr<td>Sa<td>Su
+                    <tbody>
+                </table>
+                <div class="inboxOuterBorder">
+                    <div class="form-control inboxLabelContainer">
+                    <label><p class="inboxLabel">Inbox</p></label>
+                    </div>
+                <div class="row">
+                    <button id="addTask"><img src="https://img.icons8.com/android/24/000000/plus.png" height="10" width="10"></img></button>
+                    <input name="taskName" id="taskName" type="text" placeholder="type name of task">
+                </div>
+                <div id="taskInbox" class="form-control">
+                </div>
+                </div>
+            </nav>
 
             <!-- current view display -->
             <div id="content" class="noselect">
@@ -104,7 +125,5 @@
 
     <!-- event creation dialog appending -->
     {% include 'event_creation_dialog.html' %}
-
-
 
 {% endblock %}
