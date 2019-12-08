@@ -26,7 +26,7 @@
             <!--TODAY BUTTON-->
             <div class="d-none col-sm-2 d-sm-none col-md-2 d-md-inline-block 
             col-lg-2 d-lg-inline-block col-xl-2 d-xl-inline-block w-50" id="no-transfer">
-                <a class='btn btn-primary btn-sm mx-2 w-20' style="color: white; width: 80px; height: 100%; line-height: 25px;">Today</a>
+                <a class='btn btn-primary btn-sm mx-2 w-20 todayButton'>Today</a>
             </div>
 
             <!--ARROWS BUTTON-->
@@ -37,7 +37,7 @@
 
             <!--DATE LABEL-->
             <div class="d-none d-sm-none col-md-2 d-md-inline-block col-lg-2 d-lg-inline-block col-xl-2 d-xl-inline-block w-100" id="no-transfer">
-                <label style="color: black; margin-top: 5px; margin-bottom: 5px;">Current month</label>
+                <label style="">Current month</label>
             </div>
 
             <div class="col-4 col-sm-4 col-md-4 col-lg-8 col-xl-8 w-100 d-inline-block justify-content-right" id="no-transfer">
@@ -45,7 +45,7 @@
                 <button data-toggle="modal" href="settings_modal.html" data-target="#settingsModal" data-backdrop="static" id="transp-button">
                     <img src="https://img.icons8.com/ios/50/000000/settings.png" height="30" width="30"></img>
                 </button>
-                <select class="" style="width: 150px; align-self: baseline; padding-top: 0px;">
+                <select class="selectOptions">
                     <option>Day</option>
                     <option>Week</option>
                     <option>Month</option>
@@ -58,9 +58,27 @@
         </div>
 
         <div class="wrapper">
-    	<nav id="sidebar">
-    		
-    	</nav>
+    	<div id="sidebar">
+    		<button class="btn btn-outline-dark createEventButton">+Create Event</button>
+    		<div id="calendar"></div>
+    		<table id="calendar2">
+  				<thead>
+    			<tr><td id="calendarArrow">‹<td id="dateHeader" colspan="5"><td id="calendarArrow">›
+    			<tr><td>Mo<td>Tu<td>We<td>Th<td>Fr<td>Sa<td>Su
+  				<tbody>
+			</table>
+    		<div class="inboxOuterBorder">
+    			<div class="form-control inboxLabelContainer">
+    			<label><p class="inboxLabel">Inbox</p></label>
+    			</div>
+    		<div class="row">
+    			<button id="addTask"><img src="https://img.icons8.com/android/24/000000/plus.png" height="10" width="10"></img></button>
+    			<input name="taskName" id="taskName" type="text" placeholder="type name of task">
+    		</div>
+    		<div id="taskInbox" class="form-control">
+    		</div>
+    		</div>
+    	</div>
 
     	<div id="content">
     		<nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -70,6 +88,83 @@
     		</nav>
     	</div>   	
     </div>
+
+    <script>
+    	$('#addTask').click(function() {  
+    		if ($("input[name='taskName']").val() != 0)  		
+    		{
+    			let inboxTask = document.createElement('div');
+    			$(inboxTask).attr("id", "inboxTask");
+    			$(inboxTask).attr("class", 'row');
+    			let taskLabel = document.createElement('div');
+    			$(taskLabel).addClass("col-sm-8");
+    			var text = $("input[name='taskName']").val();
+    			$(taskLabel).text(text);
+
+    			let inboxButton = document.createElement('button');
+    			$(inboxButton).attr("class", "col-sm-1");
+    			$(inboxButton).attr("type", "button");
+    			$(inboxButton).attr("id", "deleteTask");
+    			$(inboxButton).on('click', function(event) {
+    				this.parentElement.remove(event.target.parentElement);
+    			}); 	
+
+    			let inboxButtonIcon = document.createElement('img');
+    			$(inboxButtonIcon).attr("src", "https://img.icons8.com/ios/24/000000/close-window.png");
+    			$(inboxButtonIcon).attr("heigth", "18");
+    			$(inboxButtonIcon).attr("width", "18");
+
+    			$(inboxButton).append(inboxButtonIcon);
+
+    			$(inboxTask).append(taskLabel);
+    			$(inboxTask).append(inboxButton);
+    			$('#taskInbox').append(inboxTask);
+    		}
+    	});
+    </script>
+
+    <script>
+    	$('#taskName').keyup(function(event){
+    	if(event.keyCode == 13){
+        	if ($("input[name='taskName']").val() != 0)  		
+    		{
+    			let inboxTask = document.createElement('div');
+    			$(inboxTask).attr("id", "inboxTask");
+    			$(inboxTask).attr("class", 'row');
+    			let taskLabel = document.createElement('div');
+    			$(taskLabel).addClass("col-sm-10");
+    			var text = $("input[name='taskName']").val();
+    			$(taskLabel).text(text);
+
+    			let inboxButton = document.createElement('button');
+    			$(inboxButton).attr("class", "col-sm-0");
+    			$(inboxButton).attr("type", "button");
+    			$(inboxButton).attr("id", "deleteTask");
+    			$(inboxButton).on('click', function(event) {
+    				this.parentElement.remove(event.target.parentElement);
+    			}); 			
+
+    			let inboxButtonIcon = document.createElement('img');
+    			$(inboxButtonIcon).attr("src", "https://img.icons8.com/ios/24/000000/close-window.png");
+    			$(inboxButtonIcon).attr("heigth", "18");
+    			$(inboxButtonIcon).attr("width", "18");
+
+    			$(inboxButton).append(inboxButtonIcon);
+
+    			$(inboxTask).append(taskLabel);
+    			$(inboxTask).append(inboxButton);
+    			$('#taskInbox').append(inboxTask);
+    		}
+
+    	}
+});
+    </script>
+
+    <script>
+    	/*$('#taskInbox').on('click', '#deleteTask', function(event) {
+    		 this.removeChild(event.target.parentElement);
+    	});*/
+    </script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -82,6 +177,67 @@
             });
         });
     </script>
+
+    <script>
+	function Calendar2(id, year, month) {
+		var Dlast = new Date(year,month+1,0).getDate(),
+    	D = new Date(year,month,Dlast),
+    	DNlast = new Date(D.getFullYear(),D.getMonth(),Dlast).getDay(),
+    	DNfirst = new Date(D.getFullYear(),D.getMonth(),1).getDay(),
+    	calendar = '<tr>',
+    	month=["January","February","March","April","May","June","July","August","September","October","November","December"];
+		if (DNfirst != 0) {
+  			for(var  i = 1; i < DNfirst; i++) calendar += '<td>';
+		}
+		else {
+  			for(var  i = 0; i < 6; i++) calendar += '<td>';
+		}
+		for(var  i = 1; i <= Dlast; i++) {
+  			if (i == new Date().getDate() && D.getFullYear() == new Date().getFullYear() && D.getMonth() == new Date().getMonth()) {
+    		calendar += '<td class="today">' + i;
+  		}
+  		else {
+    		calendar += '<td>' + i;
+  		}
+  		if (new Date(D.getFullYear(),D.getMonth(),i).getDay() == 0) {
+    		calendar += '<tr>';
+  		}
+		}
+		for(var  i = DNlast; i < 7; i++) calendar += '<td>&nbsp;';
+		document.querySelector('#'+id+' tbody').innerHTML = calendar;
+		document.querySelector('#'+id+' thead td:nth-child(2)').innerHTML = month[D.getMonth()] +' '+ D.getFullYear();
+		document.querySelector('#'+id+' thead td:nth-child(2)').dataset.month = D.getMonth();
+		document.querySelector('#'+id+' thead td:nth-child(2)').dataset.year = D.getFullYear();
+		if (document.querySelectorAll('#'+id+' tbody tr').length < 6) {  // чтобы при перелистывании месяцев не "подпрыгивала" вся страница, добавляется ряд пустых клеток. Итог: всегда 6 строк для цифр
+    	document.querySelector('#'+id+' tbody').innerHTML += '<tr><td>&nbsp;<td>&nbsp;<td>&nbsp;<td>&nbsp;<td>&nbsp;<td>&nbsp;<td>&nbsp;';
+		}
+	}
+	Calendar2("calendar2", new Date().getFullYear(), new Date().getMonth());
+	// переключатель минус месяц
+	document.querySelector('#calendar2 thead tr:nth-child(1) td:nth-child(1)').onclick = function() {
+  	Calendar2("calendar2", document.querySelector('#calendar2 thead td:nth-child(2)').dataset.year, parseFloat(document.querySelector('#calendar2 thead td:nth-child(2)').dataset.month)-1);
+	}
+	// переключатель плюс месяц
+	document.querySelector('#calendar2 thead tr:nth-child(1) td:nth-child(3)').onclick = function() {
+  	Calendar2("calendar2", document.querySelector('#calendar2 thead td:nth-child(2)').dataset.year, parseFloat(document.querySelector('#calendar2 thead td:nth-child(2)').dataset.month)+1);
+	}
+	</script>
+
+	<script>
+		$('#calendar2').on('click', function(event) {
+			$('.selected').removeClass('selected');
+			let selected = event.target;
+			$(selected).addClass('selected');
+			var selectedDay = selected.innerHTML;
+			if(Number.isInteger(Number(selectedDay)) == true)
+			{
+				let selectedMonth = $('#dateHeader').attr('data-month');
+				let selectedYear = $('#dateHeader').attr('data-year');
+				let selectedDate = new Date(selectedYear, selectedMonth, selectedDay);
+				console.log(selectedDate);
+			}
+		});
+	</script>>
 
 
 {% include 'user_profile.html' %}
