@@ -6,7 +6,7 @@
 
 {% block extended_head %}
     <link rel="stylesheet" type="text/css" href="{% static 'calendar/css/calendar.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'calendar/css/week_view.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'calendar/css/view_modes.css' %}">
 
     <script type="text/javascript" src="{% static 'calendar/js/main.js' %}"></script>
     <script type="text/javascript" src="{% static 'calendar/js/week_view.js' %}"></script>
@@ -33,7 +33,7 @@
 
                 <!--TODAY button container -->
                 <div class="today-button-container">
-                    <button class="btn btn-outline-secondary">Today</button>
+                    <button id="todayBtn" class="btn btn-outline-secondary">Today</button>
                 </div>
 
                 <!--VIEW SCROLL buttons container -->
@@ -90,8 +90,7 @@
             <nav id="sidebar"></nav>
 
             <!-- current view display -->
-            <div id="content">
-
+            <div id="content" class="noselect">
 
             </div>
 
@@ -102,5 +101,10 @@
     <!-- modal windows appending -->
     {% include 'user_profile.html' %}
     {% include 'settings_modal.html' %}
+
+    <!-- event creation dialog appending -->
+    {% include 'event_creation_dialog.html' %}
+
+
 
 {% endblock %}

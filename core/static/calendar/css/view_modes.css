@@ -86,31 +86,75 @@
     margin: auto 0;
 }
 
+.view-header-item > p.currDay {
+    color: #3e87e6;
+}
+
 .view-header-item > span {
     width: 42px;
     height: 42px;
     margin: 0 auto auto;
+    border: solid #FFFFFF 1px;
+    border-radius: 50%;
+    padding: 5px;
     font-weight: bold;
     font-size: 1.3em;
     color: #6e6e6e;
 }
 
+.view-header-item > span:hover {
+    cursor: pointer;
+    background-color: #e3e3e3;
+}
+
 .view-header-item > span.td {
-    border: solid black 1px;
-    border-radius: 50%;
-    padding: 5px;
+    border-color: #3e87e6;
+    color: #FFFFFF;
+    background-color: #3e87e6;
+}
+
+.view-header-item > span.td:hover {
+    cursor: pointer;
+    background-color: #3976ce;
 }
 
 .event {
     display: flex;
+    flex-direction: column;
     position: absolute;
     width: 99%;
-    opacity: 0.6;
-    background-color: #009BDF;
-    border-left: solid #7587C7 3px;
+    color: #ffffff;
+    border-left: solid #48588c 3px;
     margin-left: 2px;
     border-top-right-radius: 7px;
     border-bottom-right-radius: 7px;
 
+}
+
+.event:hover {
+    cursor: pointer;
+}
+
+.event-content {
+    margin-left: 2%;
+}
+
+.event-title {
+    font-weight: bold;
+    font-size: 80%;
+}
+
+.event-timenote {
+    font-size: 80%;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
 }
 

@@ -1,6 +1,6 @@
 'use strict';
 
-function buildWeekViewHeader(headerID, baseDate) {
+function buildWeekViewHeader(headerID, currWeekDates) {
 
     // view header initialization
     let viewHeader = document.createElement('div');
@@ -8,8 +8,7 @@ function buildWeekViewHeader(headerID, baseDate) {
     viewHeader.classList.add('view-header');
 
     //view header building
-    let weekInfo = getWeekInfo(baseDate);
-    setHeaderDateInfo(weekInfo.weekFirstDate, weekInfo.weekLastDate);
+    setHeaderDateInfo(currWeekDates[0], currWeekDates[6]);
 
     for (let i = 0; i < 7; i++) {
         let headerItem = document.createElement('div');
@@ -17,22 +16,25 @@ function buildWeekViewHeader(headerID, baseDate) {
         headerItem.appendChild(document.createElement('p'));
         headerItem.firstChild.innerText = WEEK_DAYS[i];
         headerItem.appendChild(document.createElement('span'));
-        headerItem.lastChild.innerText = weekInfo.currWeekDates[i].getDate(); // TEMP
+        headerItem.lastChild.innerText = currWeekDates[i].getDate();
+        headerItem.lastChild.setAttribute('data-date-info', currWeekDates[i].toString());
 
-        if (weekInfo.currWeekDates[i].getDate() === CURRENT_DATE.getDate() &&
-            weekInfo.currWeekDates[i].getMonth() === CURRENT_DATE.getMonth() &&
-            weekInfo.currWeekDates[i].getFullYear() === CURRENT_DATE.getFullYear()) {
+        if (currWeekDates[i].getDate() === CURRENT_DATE.getDate() &&
+            currWeekDates[i].getMonth() === CURRENT_DATE.getMonth() &&
+            currWeekDates[i].getFullYear() === CURRENT_DATE.getFullYear()) {
 
+            headerItem.firstChild.classList.add('currDay');
             headerItem.lastChild.classList.add('td');
 
         } // mark current date
+
         viewHeader.appendChild(headerItem);
     }
 
     return viewHeader;
 }
 
-function buildWeekViewBody(viewBodyID, baseDate) {
+function buildWeekViewBody(viewBodyID, currWeekDates) {
 
     // view body and view timeline initialization
     let viewBody = document.createElement('div');
@@ -46,6 +48,7 @@ function buildWeekViewBody(viewBodyID, baseDate) {
     for (let i = 0; i < 23; i++) {
         let timeline_item = document.createElement('div');
         timeline_item.classList.add('timeline-item');
+        if ($('#sidebar').attr("class") === "active") timeline_item.classList.add("act"); // to keep right width of time lines
         timeline_item.appendChild(document.createElement('span'));
         timeline_item.firstChild.innerHTML = TIMESTAMPS[i];
         viewTimeline.appendChild(timeline_item);
@@ -55,20 +58,51 @@ function buildWeekViewBody(viewBodyID, baseDate) {
     viewBody.appendChild(viewTimeline);
 
     // view body building
+    let weekDays = [];
     for (let i = 0; i < 7; i++) {
-        let week_day = document.createElement('div');
-        week_day.classList.add('week-view-body-col');
-        viewBody.appendChild(week_day);
+        let weekDay = document.createElement('div');
+        weekDay.classList.add('week-view-body-col');
+        weekDay.setAttribute('data-date-info', currWeekDates[i].toString());
+        viewBody.appendChild(weekDay);
+        weekDays[i] = weekDay;
     }
+
+    // events insertion
+    let currWeekDatesStr = [];
+    for (let i=0; i < 7; i++) currWeekDatesStr[i] = currWeekDates[i].toString();
+
+    $.ajax({
+        type: 'GET',
+        url: 'get_events/',
+        data: {
+            dates: JSON.stringify(currWeekDatesStr),
+        },
+        dataType: 'json',
+        success: function (data) {
+
+            for (let i=0; i < 7; i++) {
+
+                for (let eventData of data[i]) {
+                    let eventParameters = converTimeToPosition(eventData.startDate, eventData.endDate);
+                    eventParameters.title = eventData.title;
+                    eventParameters.color = eventData.color;
+                    let eventElement = createNewEvent(eventParameters);
+                    let eventTimenote = eventElement.getElementsByClassName('event-timenote')[0];
+                    eventTimenote.innerText = getTimeNote(eventElement);
+                    weekDays[i].appendChild(eventElement);
+                }
+            }
+        }
+    });
 
     return viewBody;
 }
 
 function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDate) {
-    let baseDateCopy = new Date();
-    baseDateCopy.setTime(baseDate.getTime());
-    let viewHeader = buildWeekViewHeader(weekViewHeaderID, baseDateCopy);
-    let viewBody = buildWeekViewBody(weekViewBodyID, baseDateCopy);
+
+    let currWeekDates = getCurrWeekDates(new Date(baseDate.getTime()));
+    let viewHeader = buildWeekViewHeader(weekViewHeaderID, currWeekDates);
+    let viewBody = buildWeekViewBody(weekViewBodyID, currWeekDates);
 
     parentElement.appendChild(viewHeader);
     parentElement.appendChild(viewBody);
@@ -78,18 +112,18 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
     viewHeader.style.marginRight = scrollbarWidth + 'px';
 
     let isMousedown = false;
-    var newEvent, eventStartPoint, prevY, topPanelHeight, scrollTopPos, scrollTopPos_delta;
+    let eventTimeNote, eventStartPoint, prevY, topPanelHeight, scrollTopPos, scrollTopPos_delta;
 
 
     $('.week-view-body-col').on({
-        mousedown: function (event) {
-            if (event.target.className === 'week-view-body-col') {
-                if (event.which === 1) {
+        mousedown: function (e) {
+            if (e.target.className === 'week-view-body-col' && $('#eventCreationDialog').css('display') === 'none') {
+                if (e.which === 1) {
 
                     isMousedown = true;
-                    prevY = event.pageY; // aux.variable for identifying mouse movement direction
-                    eventStartPoint = Math.round(event.offsetY / TIME_STEP) * TIME_STEP; // event start point (always starts from the point that is multiple of 15 min)
-                    topPanelHeight = event.pageY - eventStartPoint; // have to consider the offset of working area
+                    prevY = e.pageY; // aux.variable for identifying mouse movement direction
+                    eventStartPoint = Math.round(e.offsetY / TIME_STEP) * TIME_STEP; // event start point (always starts from the point that is multiple of 15 min)
+                    topPanelHeight = e.pageY - eventStartPoint; // have to consider the offset of working area
 
                     // scrolling offset
                     scrollTopPos = document.getElementById('weekViewBody').scrollTop;
@@ -97,61 +131,87 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
 
                     // new DOM item
                     newEvent = createNewEvent(eventStartPoint);
+                    newEvent.style.opacity = 0.6;
+                    eventTimeNote = newEvent.getElementsByClassName('event-timenote')[0];
                     this.appendChild(newEvent);
                 } // interested only in left mouse key down
             } // free working area was a target of mousedown event
         },
-        mouseup: function (event) {
+        mouseup: function (e) {
             if (isMousedown) {
 
                 if (newEvent.style.height === '0px') {
-                    newEvent.style.top = eventStartPoint + 'px';
-                    newEvent.style.height = TIME_STEP * 2 + 'px'; // default duration is an hour
-                } // user just clicked on the area, no duration was stated OR resulting duration is equal to 0
+
+                    if (eventStartPoint === 1440) eventStartPoint -= TIME_STEP * 4;
+
+                    newEvent.style.top = eventStartPoint - eventStartPoint % 60 + 'px';
+                    newEvent.style.height = TIME_STEP * 4 + 'px'; // default duration is an hour
+
+                    // update event time note
+                    eventTimeNote.innerText = getTimeNote(newEvent);
+
+                } // user just clicked on the area, no duration was stated
 
                 newEvent.style.height -= 2 + 'px'; // to make margin
-                newEvent.style.opacity = 1;
 
                 isMousedown = false;
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'add_new_event/',
-                    data: {
-                        csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
-                        test_data: newEvent.style.top,
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data.flag) {
-                            alert('SUCCESS!');
-                        }
-                    }
-                })
+                // event creation dialog call
+                showEventCreationDialog(newEvent, e);
+
             } // the mousedown event was generated in free working area
         },
-        mousemove: function (event) {
+        mousemove: function (e) {
 
             if (isMousedown) {
-                if (Math.abs(prevY - event.pageY) >= TIME_STEP) {
+                if (Math.abs(prevY - e.pageY) >= TIME_STEP) {
 
                     scrollTopPos_delta = document.getElementById('weekViewBody').scrollTop - scrollTopPos;
 
-                    if (event.pageY + scrollTopPos_delta - topPanelHeight > eventStartPoint) {
+                    if (e.pageY + scrollTopPos_delta - topPanelHeight > eventStartPoint) {
 
                         if (newEvent.style.top !== eventStartPoint) newEvent.style.top = eventStartPoint + 'px'; // direction was changed
-                        newEvent.style.height = Math.round((event.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta) / TIME_STEP) * TIME_STEP + 'px';
+
+                        if (Math.round((e.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta) / TIME_STEP) >= 3)
+                        {
+                            newEvent.style.height = Math.round((e.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta) / TIME_STEP) * TIME_STEP + 'px';
+                        }
+                        else {
+                            newEvent.style.height = TIME_STEP * 3 + 'px';
+                        } // event can not be shorter than 45 minutes
+
                     } // resizing after breakpoint (initClickY)
                     else {
-                        newEvent.style.top = Math.round((Math.abs(event.pageY - topPanelHeight + scrollTopPos_delta)) / TIME_STEP) * TIME_STEP + 'px';
-                        newEvent.style.height = Math.round((Math.abs(event.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta)) / TIME_STEP) * TIME_STEP + 'px';
+
+                        if (Math.round((Math.abs(e.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta)) / TIME_STEP)  >= 3) {
+                            newEvent.style.top = Math.round((Math.abs(e.pageY - topPanelHeight + scrollTopPos_delta)) / TIME_STEP) * TIME_STEP + 'px';
+                            newEvent.style.height = Math.round((Math.abs(e.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta)) / TIME_STEP) * TIME_STEP + 'px';
+                        } // event can not be shorter than 45 minutes
+
                     } // resizing before breakpoint (initClickY)
 
-                    prevY = event.pageY;
+                    // save previous cursor position
+                    prevY = e.pageY;
+
+                    // update event time note
+                    eventTimeNote.innerText = getTimeNote(newEvent);
 
                 } // movement is reasonable
             } // changing a new event duration only if left mouse key is down
         }
     });
+
+    $('.view-header-item > span').on({
+        click: function (e) {
+            let date = new Date(e.target.getAttribute('data-date-info'));
+            BASE_DATE.setTime(date.getTime());
+            VIEW_MODE = 0;
+            $("#viewSelector option").removeAttr('selected');
+            $("#viewSelector option[value=0]").attr('selected', true);
+            content.innerHTML = "";
+            buildDayView(content, 'dayViewHeader', 'dayViewBody', BASE_DATE);
+
+        }
+    })
 
 }

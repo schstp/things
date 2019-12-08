@@ -1,6 +1,6 @@
 'use strict';
 
-function buildDayViewHeader(headerID) {
+function buildDayViewHeader(headerID, date) {
 
     // view header initialization
     let viewHeader = document.createElement('div');
@@ -8,21 +8,29 @@ function buildDayViewHeader(headerID) {
     viewHeader.classList.add('view-header');
 
     //view header building
+    setHeaderDateInfo(date);
+
     let headerItem = document.createElement('div');
     headerItem.classList.add('view-header-item');
     headerItem.appendChild(document.createElement('p'));
-    headerItem.firstChild.innerText = window.WEEK_DAYS[0];
+    headerItem.firstChild.innerText = WEEK_DAYS[getLocalDay(date)];
     headerItem.appendChild(document.createElement('span'));
-    headerItem.lastChild.innerText = "d"; // TEMP
+    headerItem.lastChild.innerText = date.getDate();
 
-    headerItem.lastChild.classList.add('td'); //temp !!!
+    if (date.getDate() === CURRENT_DATE.getDate() &&
+        date.getMonth() === CURRENT_DATE.getMonth() &&
+        date.getFullYear() === CURRENT_DATE.getFullYear()) {
+
+        headerItem.lastChild.classList.add('td');
+
+    } // mark current date
 
     viewHeader.appendChild(headerItem);
 
     return viewHeader;
 }
 
-function buildDayViewBody(viewBodyID) {
+function buildDayViewBody(viewBodyID, date) {
 
     // view body and view timeline initialization
     let viewBody = document.createElement('div');
@@ -36,6 +44,7 @@ function buildDayViewBody(viewBodyID) {
     for (let i = 0; i < 23; i++) {
         let timeline_item = document.createElement('div');
         timeline_item.classList.add('timeline-item');
+        if ($('#sidebar').attr("class") === "active") timeline_item.classList.add("act"); // to keep right width of time lines
         timeline_item.appendChild(document.createElement('span'));
         timeline_item.firstChild.innerHTML = window.TIMESTAMPS[i];
         viewTimeline.appendChild(timeline_item);
@@ -45,16 +54,41 @@ function buildDayViewBody(viewBodyID) {
     viewBody.appendChild(viewTimeline);
 
     // view body building
-    let week_day = document.createElement('div');
-    week_day.classList.add('day-view-body-col');
-    viewBody.appendChild(week_day);
+    let weekDay = document.createElement('div');
+    weekDay.classList.add('day-view-body-col');
+    weekDay.setAttribute('data-date-info', date.toString());
+    viewBody.appendChild(weekDay);
+
+    $.ajax({
+        type: 'GET',
+        url: 'get_event/',
+        data: {
+            date: JSON.stringify(date.toString()),
+        },
+        dataType: 'json',
+        success: function (data) {
+            for (let eventData of data['events']) {
+                let eventParameters = converTimeToPosition(eventData.startDate, eventData.endDate);
+                eventParameters.title = eventData.title;
+                eventParameters.color = eventData.color;
+
+                let eventElement = createNewEvent(eventParameters);
+                let eventTimenote = eventElement.getElementsByClassName('event-timenote')[0];
+                eventTimenote.innerText = getTimeNote(eventElement);
+                weekDay.appendChild(eventElement);
+            }
+        }
+    });
 
     return viewBody;
 }
 
-function buildDayView (parentElement, dayViewHeaderID, dayViewBodyID) {
-    let viewHeader = buildDayViewHeader(dayViewHeaderID);
-    let viewBody = buildDayViewBody(dayViewBodyID);
+function buildDayView (parentElement, dayViewHeaderID, dayViewBodyID, date) {
+    let dateCopy = new Date();
+    dateCopy.setTime(date.getTime());
+
+    let viewHeader = buildDayViewHeader(dayViewHeaderID, dateCopy);
+    let viewBody = buildDayViewBody(dayViewBodyID, dateCopy);
 
     parentElement.appendChild(viewHeader);
     parentElement.appendChild(viewBody);
@@ -64,18 +98,18 @@ function buildDayView (parentElement, dayViewHeaderID, dayViewBodyID) {
     viewHeader.style.marginRight = scrollbarWidth + 'px';
 
     let isMousedown = false;
-    var newEvent, eventStartPoint, prevY, topPanelHeight, scrollTopPos, scrollTopPos_delta;
+    var eventTimeNote, eventStartPoint, prevY, topPanelHeight, scrollTopPos, scrollTopPos_delta;
 
 
     $('.day-view-body-col').on({
-        mousedown: function (event) {
-            if (event.target.className === 'day-view-body-col') {
-                if (event.which === 1) {
+        mousedown: function (e) {
+            if (e.target.className === 'day-view-body-col' && $('#eventCreationDialog').css('display') === 'none') {
+                if (e.which === 1) {
 
                     isMousedown = true;
-                    prevY = event.pageY; // aux.variable for identifying mouse movement direction
-                    eventStartPoint = Math.round(event.offsetY / window.TIME_STEP) * window.TIME_STEP; // event start point (always starts from the point that is multiple of 15 min)
-                    topPanelHeight = event.pageY - eventStartPoint; // have to consider the offset of working area
+                    prevY = e.pageY; // aux.variable for identifying mouse movement direction
+                    eventStartPoint = Math.round(e.offsetY / window.TIME_STEP) * TIME_STEP; // event start point (always starts from the point that is multiple of 15 min)
+                    topPanelHeight = e.pageY - eventStartPoint; // have to consider the offset of working area
 
                     // scrolling offset
                     scrollTopPos = document.getElementById('dayViewBody').scrollTop;
@@ -83,42 +117,71 @@ function buildDayView (parentElement, dayViewHeaderID, dayViewBodyID) {
 
                     // new DOM item
                     newEvent = createNewEvent(eventStartPoint);
+                    newEvent.style.opacity = 0.6;
+                    eventTimeNote = newEvent.getElementsByClassName('event-timenote')[0];
                     this.appendChild(newEvent);
                 } // interested only in left mouse key down
             } // free working area was a target of mousedown event
         },
-        mouseup: function (event) {
+        mouseup: function (e) {
             if (isMousedown) {
 
                 if (newEvent.style.height === '0px') {
-                    newEvent.style.top = eventStartPoint + 'px';
-                    newEvent.style.height = TIME_STEP * 2 + 'px'; // default duration is an hour
-                } // user just clicked on the area, no duration was stated OR resulting duration is equal to 0
+
+                    if (eventStartPoint === 1440) eventStartPoint -= TIME_STEP * 4;
+
+                    newEvent.style.top = eventStartPoint - eventStartPoint % 60 + 'px';
+                    newEvent.style.height = TIME_STEP * 4 + 'px'; // default duration is an hour
+
+                    // update event time note
+                    eventTimeNote.innerText = getTimeNote(newEvent);
+
+                } // user just clicked on the area, no duration was stated
 
                 newEvent.style.height -= 2 + 'px'; // to make margin
-                newEvent.style.opacity = 1;
 
                 isMousedown = false;
+
+                // event creation dialog call
+                showEventCreationDialog(newEvent, e);
+
             } // the mousedown event was generated in free working area
         },
-        mousemove: function (event) {
+        mousemove: function (e) {
+
 
             if (isMousedown) {
-                if (Math.abs(prevY - event.pageY) >= TIME_STEP) {
+                if (Math.abs(prevY - e.pageY) >= TIME_STEP) {
 
                     scrollTopPos_delta = document.getElementById('dayViewBody').scrollTop - scrollTopPos;
 
-                    if (event.pageY + scrollTopPos_delta - topPanelHeight > eventStartPoint) {
+                    if (e.pageY + scrollTopPos_delta - topPanelHeight > eventStartPoint) {
 
                         if (newEvent.style.top !== eventStartPoint) newEvent.style.top = eventStartPoint + 'px'; // direction was changed
-                        newEvent.style.height = Math.round((event.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta) / TIME_STEP) * TIME_STEP + 'px';
+
+                        if (Math.round((e.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta) / TIME_STEP) >= 3)
+                        {
+                            newEvent.style.height = Math.round((e.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta) / TIME_STEP) * TIME_STEP + 'px';
+                        }
+                        else {
+                            newEvent.style.height = TIME_STEP * 3 + 'px';
+                        } // event can not be shorter than 45 minutes
+
                     } // resizing after breakpoint (initClickY)
                     else {
-                        newEvent.style.top = Math.round((Math.abs(event.pageY - topPanelHeight + scrollTopPos_delta)) / TIME_STEP) * TIME_STEP + 'px';
-                        newEvent.style.height = Math.round((Math.abs(event.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta)) / TIME_STEP) * TIME_STEP + 'px';
+
+                        if (Math.round((Math.abs(e.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta)) / TIME_STEP)  >= 3) {
+                            newEvent.style.top = Math.round((Math.abs(e.pageY - topPanelHeight + scrollTopPos_delta)) / TIME_STEP) * TIME_STEP + 'px';
+                            newEvent.style.height = Math.round((Math.abs(e.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta)) / TIME_STEP) * TIME_STEP + 'px';
+                        } // event can not be shorter than 45 minutes
+
                     } // resizing before breakpoint (initClickY)
 
-                    prevY = event.pageY;
+                    // save previous cursor position
+                    prevY = e.pageY;
+
+                    // update event time note
+                    eventTimeNote.innerText = getTimeNote(newEvent);
 
                 } // movement is reasonable
             } // changing a new event duration only if left mouse key is down
