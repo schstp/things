@@ -78,7 +78,7 @@ function getWeekNumber(date) {
     var yearStart;
     var ts;
 
-    if (_.isDate(date)) {
+    if (date instanceof Date) {
         ts = new Date(date);
     } else {
         ts = date ? new Date(date) : new Date();
@@ -447,21 +447,6 @@ $(document).ready(function () {
   	buildCalendar("calendar2", document.querySelector('#calendar2 thead td:nth-child(2)').dataset.year,
         parseFloat(document.querySelector('#calendar2 thead td:nth-child(2)').dataset.month)+1);
 	};
-
-    // click on sidebar calendar handler
-    $('#calendar2').on('click', function(event) {
-        $('.selected').removeClass('selected');
-        let selected = event.target;
-        $(selected).addClass('selected');
-        var selectedDay = selected.innerHTML;
-        if(Number.isInteger(Number(selectedDay)) === true)
-        {
-            let selectedMonth = $('#dateHeader').attr('data-month');
-            let selectedYear = $('#dateHeader').attr('data-year');
-            let selectedDate = new Date(selectedYear, selectedMonth, selectedDay);
-            console.log(selectedDate);
-        }
-    });
 
     // sidebar button click
     $('#sidebarCollapse').on('click', function () {

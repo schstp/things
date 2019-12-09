@@ -23,7 +23,7 @@ def calendar(request):
 def add_new_event(request):
     start_date = datetime.strptime(request.POST.get('start_date')[5:25], "%b %d %Y %H:%M:%S")
     end_date = datetime.strptime(request.POST.get('end_date')[5:25], "%b %d %Y %H:%M:%S")
-    new_event = Event.objects.create(start_date=start_date, end_date=end_date ,user= request.user)
+    new_event = Event.objects.create(start_date=start_date, end_date=end_date ,user=request.user)
     new_event.save()
 
     data = {
