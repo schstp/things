@@ -479,5 +479,42 @@ $(document).ready(function () {
     $(window).on('resize', changeEventCreationDialogPosition);
 
     // saveEventBtn handler
-    $('#saveEventBtn').on('click', saveNewEvent)
+    $('#saveEventBtn').on('click', saveNewEvent);
+
+    var searchMode = false;
+
+    // search button click event
+    $('#searchButton').on('click', function() 
+    {
+        if (!searchMode)
+        {
+            searchMode = true;
+            //hiding panel
+            var hideElem = document.getElementById("hideElem");
+            hideElem.style.display = "none";
+
+            //creating search field
+            var searchField = document.getElementById("searchField");
+            var searchItem = document.createElement("input");
+            searchItem.id = "searchItem";
+            searchItem.type = "text";
+            searchItem.placeholder = "Type name of task";
+
+            //appending search field
+            searchField.appendChild(searchItem)
+        }
+        else
+        {
+            searchMode = false;
+            //removing search field
+            var searchField = document.getElementById("searchField");
+            while (searchField.firstChild)
+                searchField.removeChild(searchField.firstChild);
+
+            //showing panel
+            var hideElem = document.getElementById("hideElem");
+            hideElem.style.display = "flex";
+        }
+
+    });
 });
