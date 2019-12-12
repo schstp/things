@@ -5,11 +5,24 @@
     height: 8%;
 }
 
+.month-view-header {
+    display: flex;
+    flex-flow: row;
+    height: 4%;
+}
+
 .view-body {
+    position: relative;
     display: flex;
     flex-flow: row;
     overflow-y: scroll;
     height: 92%;
+}
+
+.month-view-body {
+    display: flex;
+    flex-flow: column;
+    height: 96%;
 }
 
 .timeline {
@@ -36,6 +49,23 @@
     border-bottom: solid #bebebe 1px;
 }
 
+.month-view-body-row {
+    display: flex;
+    width: 100%;
+    height: 240px;
+    border-bottom: solid #bebebe 1px;
+    border-left: solid #bebebe 1px;
+}
+
+.month-view-body-cell {
+    position: relative;
+    width: 14.3%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 5px;
+    border-right: solid #bebebe 1px;
+}
+
 .view-header-item {
     flex: 1;
     display: flex;
@@ -43,6 +73,34 @@
     border-bottom: solid #bebebe 1px;
     text-align: center;
     justify-content: center;
+}
+
+.timemark {
+    display: block;
+    z-index: 9;
+    position: absolute;
+    left: 53px;
+    top: -7px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: red;
+}
+
+.timemark::after{
+    content: '';
+    position: absolute;
+    display: block;
+    top: 50%;
+    width: calc(100vw - 340px);
+    height: 2px;
+    background: red;
+    border-radius: 10%;
+    transition: all 0.3s;
+}
+
+.timemark.act::after {
+    width: calc(100vw - 70px);
 }
 
 .timeline-item {
@@ -55,7 +113,7 @@
 .timeline-item::after {
     content: '';
     display: block;
-    width: calc(100vw - 350px);
+    width: calc(100vw - 340px);
     height: 1px;
     background: #bebebe;
     position: absolute;
@@ -65,7 +123,7 @@
 }
 
 .timeline-item.act::after {
-    width: calc(100vw - 80px);
+    width: calc(100vw - 70px);
 }
 
 .timeline-item span {
@@ -118,6 +176,79 @@
     background-color: #3976ce;
 }
 
+.month-view-body-row span.date {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    margin: auto;
+    border: solid #ffffff 1px;
+    border-radius: 50%;
+    padding: 0 5px 0 5px;
+    font-weight: bold;
+    font-size: 0.8em;
+    color: #6e6e6e;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.month-view-body-row span.date:hover {
+    cursor: pointer;
+    background-color: #e3e3e3;
+}
+
+.month-view-body-row span.td {
+    border-color: #3e87e6;
+    color: #FFFFFF;
+    background-color: #3e87e6;
+}
+
+.month-view-body-row span.td:hover {
+    cursor: pointer;
+    background-color: #3976ce;
+}
+
+.month-event-info {
+    display: flex;
+    align-items: center;
+    border-radius: 6%;
+}
+
+.month-event-info:hover {
+    cursor: pointer;
+    background-color: #eeeeee;
+}
+
+.month-event-info span.color {
+    width: 6px;
+    height: 6px;
+    margin-left: 3px;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.month-event-info span.start {
+    display: block;
+    margin: 0 5px;
+    font-size: 75%;
+    color: #6e6e6e;
+}
+
+.month-event-info span.title {
+    height: 1.5em;
+    overflow: hidden;
+    color: #6e6e6e;
+    font-size: 75%;
+    font-weight: bold;
+}
+
+.show-more {
+    position: absolute;
+    bottom: 0;
+    right: 5px;
+    font-size: 70%;
+}
+
 .event {
     display: flex;
     flex-direction: column;
@@ -129,6 +260,30 @@
     border-top-right-radius: 7px;
     border-bottom-right-radius: 7px;
 
+}
+
+.event-modifying {
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 99%;
+    color: #ffffff;
+    border-radius: 7px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transform: scale(1.005,1);
+}
+
+.cursor-grab {
+    cursor: grabbing;
+}
+
+.cursor-resize {
+    cursor: row-resize;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }
 
 .event:hover {
@@ -146,6 +301,15 @@
 
 .event-timenote {
     font-size: 80%;
+}
+
+.stretch-box {
+    margin-top: auto;
+    height: 4px;
+}
+
+.stretch-box:hover {
+    cursor: row-resize;
 }
 
 .noselect {

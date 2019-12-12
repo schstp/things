@@ -11,11 +11,16 @@
     <script type="text/javascript" src="{% static 'calendar/js/main.js' %}"></script>
     <script type="text/javascript" src="{% static 'calendar/js/week_view.js' %}"></script>
     <script type="text/javascript" src="{% static 'calendar/js/day_view.js' %}"></script>
+    <script type="text/javascript" src="{% static 'calendar/js/month_view.js' %}"></script>
     <script type="text/javascript" src="{% static 'calendar/js/view_manager.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 
+    <script type="text/javascript">
+        window.VIEW_MODE = {{ view_mode }};
+        window.IS_SIDEBAR_ON = {{ is_sidebar_on }};
+    </script>
 
     <div class="wrapper">
 
@@ -70,10 +75,15 @@
                 <!-- view selector -->
                 <select id="viewSelector">
                     <option value="0">Day</option>
-                    <option value="1" selected>Week</option>
+                    <option value="1">Week</option>
                     <option value="2">Month</option>
                     <option value="3">Schedule</option>
                 </select>
+
+                <!-- view selector initialization ("selected" item according user last used mode) -->
+                <script type="text/javascript">
+                    $("#viewSelector option[value=" + VIEW_MODE + "]").attr('selected', true);
+                </script>
 
                 <!-- user profile settings button -->
                 <button data-toggle="modal" data-target="#userModal" data-backdrop="static" class="transp-button">
@@ -91,7 +101,7 @@
             <nav id="sidebar">
                 <button class="btn btn-outline-dark createEventButton">+Create Event</button>
                 <div id="calendar"></div>
-                <table id="calendar2">
+                <table id="calendar2" class="noselect">
                     <thead>
                     <tr><td id="calendarArrow">‹<td id="dateHeader" colspan="5"><td id="calendarArrow">›
                     <tr><td>Mo<td>Tu<td>We<td>Th<td>Fr<td>Sa<td>Su
@@ -114,7 +124,13 @@
             <div id="content" class="noselect">
 
             </div>
-
+            <!-- sidebar initial state -->
+            <script type="text/javascript">
+                if (!IS_SIDEBAR_ON) {
+                    $('#sidebar, #content').toggleClass('active');
+                    $('.timeline-item, .timemark').toggleClass('act');
+                }
+            </script>
         </div>
 
     </div>

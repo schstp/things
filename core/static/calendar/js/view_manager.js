@@ -1,36 +1,65 @@
 'use strict';
 
 
-$(document).ready(function () {
-    /* TEMP PART WHILE NOT CACHING USER LAST USED MODE */
-    let content = document.getElementById('content');
+function renderCurrentMode(content) {
+
+    $("#viewSelector option").removeAttr('selected');
     content.innerHTML = "";
-    buildWeekView(content, 'weekViewHeader', 'weekViewBody', BASE_DATE);
+
+    switch (VIEW_MODE) {
+        case 0:
+            $("#viewSelector option[value=0]").attr('selected', true);
+            buildDayView(content, 'dayViewHeader', 'dayViewBody', BASE_DATE);
+            break;
+        case 1:
+            $("#viewSelector option[value=1]").attr('selected', true);
+            buildWeekView(content, 'weekViewHeader', 'weekViewBody', BASE_DATE);
+            break;
+        case 2:
+            buildMonthView(content, 'monthViewHeader', 'monthViewBody', BASE_DATE);
+            $("#viewSelector option[value=2]").attr('selected', true);
+            break;
+        case 3:
+            $("#viewSelector option[value=3]").attr('selected', true);
+            break;
+    }
+}
+
+
+function saveUserViewSettings() {
+    $.ajax({
+        type: 'POST',
+        url: 'save_user_view_settings/',
+        data: {
+            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+            view_mode: VIEW_MODE,
+            is_sidebar_on: IS_SIDEBAR_ON,
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.flag) {
+                console.log('SUCCESS! [view mode and sidebar state have been saved]');
+            }
+        }
+    })
+}
+
+
+$(document).ready(function () {
+
+    let content = document.getElementById('content');
+
+    renderCurrentMode(content); // init
 
     // view mode changing handler
     $('#viewSelector').change(function () {
 
         VIEW_MODE = +this.value;
-        let content = document.getElementById('content');
-        content.innerHTML = "";
         $("#viewSelector option").removeAttr('selected');
 
-        switch (VIEW_MODE) {
-            case 0:
-                $("#viewSelector option[value=0]").attr('selected', true);
-                buildDayView(content, 'dayViewHeader', 'dayViewBody', BASE_DATE);
-                break;
-            case 1:
-                $("#viewSelector option[value=1]").attr('selected', true);
-                buildWeekView(content, 'weekViewHeader', 'weekViewBody', BASE_DATE);
-                break;
-            case 2:
-                $("#viewSelector option[value=2]").attr('selected', true);
-                break;
-            case 3:
-                $("#viewSelector option[value=3]").attr('selected', true);
-                break;
-        }
+        renderCurrentMode(content);
+        saveUserViewSettings();
+
     });
 
     // click on sidebar calendar handler
@@ -51,94 +80,81 @@ $(document).ready(function () {
                         BASE_DATE.getMonth() !== selectedDate.getMonth() ||
                         BASE_DATE.getDate() !== selectedDate.getDate()) {
 
-                        BASE_DATE.setTime(selectedDate);
-                        content.innerHTML = "";
-                        buildDayView(content, 'dayViewHeader', 'dayViewBody', BASE_DATE);
+                        BASE_DATE.setTime(selectedDate.getTime());
+                        renderCurrentMode(content);
                     }
                     break;
                 case 1:
                     if (getWeekNumber(BASE_DATE) !== getWeekNumber(selectedDate)) {
-
-                        BASE_DATE.setTime(selectedDate);
-                        content.innerHTML = "";
-                        buildWeekView(content, 'dayViewHeader', 'dayViewBody', BASE_DATE);
+                        BASE_DATE.setTime(selectedDate.getTime());
+                        renderCurrentMode(content);
                     }
                     break;
                 case 2:
-                    console.log('at 2 | NOT IMPLEMENTED | CLICK ON SIDEBAR CALENDAR');
+                    if (BASE_DATE.getMonth() !== selectedDate.getMonth()) {
+                        BASE_DATE.setTime(selectedDate.getTime());
+                        renderCurrentMode(content);
+                    }
                     break;
                 case 3:
                     console.log('at 3 | NOT IMPLEMENTED | CLICK ON SIDEBAR CALENDAR');
                     break;
-                }
-
+            }
         }
     });
 
     // moveBack button click
     $('#moveBack').on('click', function () {
 
-        content.innerHTML = "";
         switch (VIEW_MODE) {
             case 0:
                 BASE_DATE.setDate(BASE_DATE.getDate() - 1 );
-                buildDayView(content, 'dayViewHeader', 'dayViewBody', BASE_DATE);
                 break;
             case 1:
                 BASE_DATE.setDate(BASE_DATE.getDate() - 7 );
-                buildWeekView(content, 'weekViewHeader', 'weekViewBody', BASE_DATE);
                 break;
             case 2:
-                console.log('at 2');
+                BASE_DATE.setMonth(BASE_DATE.getMonth() - 1);
                 break;
             case 3:
                 console.log('at 3');
                 break;
         }
+
+        renderCurrentMode(content);
     });
 
     // moveForward button click
     $('#moveForward').on('click', function () {
 
-        content.innerHTML = "";
-
         switch (VIEW_MODE) {
             case 0:
                 BASE_DATE.setDate(BASE_DATE.getDate() + 1);
-                buildDayView(content, 'dayViewHeader', 'dayViewBody', BASE_DATE);
                 break;
             case 1:
                 BASE_DATE.setDate(BASE_DATE.getDate() + 7);
-                buildWeekView(content, 'weekViewHeader', 'weekViewBody', BASE_DATE);
                 break;
             case 2:
-                console.log('at 2');
+                BASE_DATE.setMonth(BASE_DATE.getMonth() + 1);
                 break;
             case 3:
                 console.log('at 3');
                 break;
         }
+
+        renderCurrentMode(content);
     });
 
     // todayBtn button click
     $('#todayBtn').on('click', function () {
 
-        content.innerHTML = "";
-        BASE_DATE.setTime(CURRENT_DATE.getTime());
+        if (BASE_DATE.getFullYear() !== CURRENT_DATE.getFullYear() ||
+            BASE_DATE.getMonth() !== CURRENT_DATE.getMonth() ||
+            BASE_DATE.getDate() !== CURRENT_DATE.getDate()) {
 
-        switch (VIEW_MODE) {
-            case 0:
-                buildDayView(content, 'dayViewHeader', 'dayViewBody', BASE_DATE);
-                break;
-            case 1:
-                buildWeekView(content, 'weekViewHeader', 'weekViewBody', BASE_DATE);
-                break;
-            case 2:
-                console.log('at 2');
-                break;
-            case 3:
-                console.log('at 3');
-                break;
+            BASE_DATE.setTime(CURRENT_DATE.getTime());
+
+            renderCurrentMode(content);
         }
     });
 

@@ -61,7 +61,7 @@ function buildDayViewBody(viewBodyID, date) {
 
     $.ajax({
         type: 'GET',
-        url: 'get_event/',
+        url: 'get_day_events/',
         data: {
             date: JSON.stringify(date.toString()),
         },
@@ -69,6 +69,7 @@ function buildDayViewBody(viewBodyID, date) {
         success: function (data) {
             for (let eventData of data['events']) {
                 let eventParameters = converTimeToPosition(eventData.startDate, eventData.endDate);
+                eventParameters.id = eventData.id;
                 eventParameters.title = eventData.title;
                 eventParameters.color = eventData.color;
 
@@ -92,6 +93,22 @@ function buildDayView (parentElement, dayViewHeaderID, dayViewBodyID, date) {
 
     parentElement.appendChild(viewHeader);
     parentElement.appendChild(viewBody);
+
+    if (date.getDate() === CURRENT_DATE.getDate() &&
+        date.getMonth() === CURRENT_DATE.getMonth() &&
+        date.getFullYear() === CURRENT_DATE.getFullYear()) {
+
+        let timemark = document.createElement('span');
+        timemark.classList.add('timemark');
+        viewBody.appendChild(timemark);
+        updateTimemark(); // init timemark position immediately
+        timemark.scrollIntoView(); // move to current time
+
+        if (!IS_SIDEBAR_ON) {
+            $(timemark).toggleClass('act');
+        } // line width depends on sidebar state
+
+    } // add timemark if current day or week is active
 
     // scrollbar width computing to consider it for the view header width
     let scrollbarWidth = viewBody.offsetWidth - viewBody.clientWidth;
@@ -117,12 +134,15 @@ function buildDayView (parentElement, dayViewHeaderID, dayViewBodyID, date) {
 
                     // new DOM item
                     newEvent = createNewEvent(eventStartPoint);
-                    newEvent.style.opacity = 0.6;
+                    newEvent.classList.toggle('event');
+                    newEvent.classList.toggle('event-modifying');
+                    content.classList.toggle('cursor-grab');
                     eventTimeNote = newEvent.getElementsByClassName('event-timenote')[0];
                     this.appendChild(newEvent);
                 } // interested only in left mouse key down
             } // free working area was a target of mousedown event
         },
+
         mouseup: function (e) {
             if (isMousedown) {
 
@@ -145,10 +165,12 @@ function buildDayView (parentElement, dayViewHeaderID, dayViewBodyID, date) {
                 // event creation dialog call
                 showEventCreationDialog(newEvent, e);
 
+                content.classList.toggle('cursor-grab');
+
             } // the mousedown event was generated in free working area
         },
-        mousemove: function (e) {
 
+        mousemove: function (e) {
 
             if (isMousedown) {
                 if (Math.abs(prevY - e.pageY) >= TIME_STEP) {
@@ -186,6 +208,35 @@ function buildDayView (parentElement, dayViewHeaderID, dayViewBodyID, date) {
                 } // movement is reasonable
             } // changing a new event duration only if left mouse key is down
         }
+    });
+
+     $('#content').on({
+        mouseup: function (e) {
+            if (isMousedown) {
+
+                if (newEvent.style.height === '0px') {
+
+                    if (eventStartPoint === 1440) eventStartPoint -= TIME_STEP * 4;
+
+                    newEvent.style.top = eventStartPoint - eventStartPoint % 60 + 'px';
+                    newEvent.style.height = TIME_STEP * 4 + 'px'; // default duration is an hour
+
+                    // update event time note
+                    eventTimeNote.innerText = getTimeNote(newEvent);
+
+                } // user just clicked on the area, no duration was stated
+
+                newEvent.style.height -= 2 + 'px'; // to make margin
+
+                isMousedown = false;
+
+                // event creation dialog call
+                showEventCreationDialog(newEvent, e);
+
+                content.classList.toggle('cursor-grab');
+
+            } // the mousedown event was generated in free working area
+        },
     });
 
 }

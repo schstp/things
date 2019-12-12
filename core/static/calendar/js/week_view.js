@@ -73,7 +73,7 @@ function buildWeekViewBody(viewBodyID, currWeekDates) {
 
     $.ajax({
         type: 'GET',
-        url: 'get_events/',
+        url: 'get_week_events/',
         data: {
             dates: JSON.stringify(currWeekDatesStr),
         },
@@ -84,6 +84,7 @@ function buildWeekViewBody(viewBodyID, currWeekDates) {
 
                 for (let eventData of data[i]) {
                     let eventParameters = converTimeToPosition(eventData.startDate, eventData.endDate);
+                    eventParameters.id = eventData.id;
                     eventParameters.title = eventData.title;
                     eventParameters.color = eventData.color;
                     let eventElement = createNewEvent(eventParameters);
@@ -106,6 +107,22 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
 
     parentElement.appendChild(viewHeader);
     parentElement.appendChild(viewBody);
+
+    if (getWeekNumber(baseDate) === getWeekNumber(CURRENT_DATE) &&
+        baseDate.getFullYear() === CURRENT_DATE.getFullYear()) {
+
+        let timemark = document.createElement('span');
+        timemark.classList.add('timemark');
+        timemark.classList.add('timemark');
+        viewBody.appendChild(timemark);
+        updateTimemark(); // init timemark position immediately
+        timemark.scrollIntoView(); // move to current time
+
+        if (!IS_SIDEBAR_ON) {
+            $(timemark).toggleClass('act');
+        } // line width depends on sidebar state
+
+    } // add timemark if current day or week is active
 
     // scrollbar width computing to consider it for the view header width
     let scrollbarWidth = viewBody.offsetWidth - viewBody.clientWidth;
@@ -131,7 +148,9 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
 
                     // new DOM item
                     newEvent = createNewEvent(eventStartPoint);
-                    newEvent.style.opacity = 0.6;
+                    newEvent.classList.toggle('event');
+                    newEvent.classList.toggle('event-modifying');
+                    content.classList.toggle('cursor-grab');
                     eventTimeNote = newEvent.getElementsByClassName('event-timenote')[0];
                     this.appendChild(newEvent);
                 } // interested only in left mouse key down
@@ -158,7 +177,7 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
 
                 // event creation dialog call
                 showEventCreationDialog(newEvent, e);
-
+                content.classList.toggle('cursor-grab');
             } // the mousedown event was generated in free working area
         },
         mousemove: function (e) {
@@ -201,17 +220,40 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
         }
     });
 
+    $('#content').on({
+        mouseup: function (e) {
+            if (isMousedown) {
+
+                if (newEvent.style.height === '0px') {
+
+                    if (eventStartPoint === 1440) eventStartPoint -= TIME_STEP * 4;
+
+                    newEvent.style.top = eventStartPoint - eventStartPoint % 60 + 'px';
+                    newEvent.style.height = TIME_STEP * 4 + 'px'; // default duration is an hour
+
+                    // update event time note
+                    eventTimeNote.innerText = getTimeNote(newEvent);
+
+                } // user just clicked on the area, no duration was stated
+
+                newEvent.style.height -= 2 + 'px'; // to make margin
+
+                isMousedown = false;
+
+                // event creation dialog call
+                showEventCreationDialog(newEvent, e);
+                content.classList.toggle('cursor-grab');
+            } // the mousedown event was generated in free working area
+        },
+    });
+
     $('.view-header-item > span').on({
         click: function (e) {
             let date = new Date(e.target.getAttribute('data-date-info'));
             BASE_DATE.setTime(date.getTime());
             VIEW_MODE = 0;
-            $("#viewSelector option").removeAttr('selected');
-            $("#viewSelector option[value=0]").attr('selected', true);
-            content.innerHTML = "";
-            buildDayView(content, 'dayViewHeader', 'dayViewBody', BASE_DATE);
-
+            renderCurrentMode(content);
+            saveUserViewSettings();
         }
-    })
-
+    });
 }

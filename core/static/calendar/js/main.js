@@ -20,21 +20,27 @@ window.TIMESTAMPS = [
 
 window.TIME_EDITS = {0: '00', 1: '01', 2: '02', 3: '03', 4: '04', 5: '05', 6: '06', 7: '07', 8: '08', 9: '09'};
 
-window.VIEW_MODE = 1;
 window.TIME_STEP = 15;
 window.BASE_DATE = new Date();
 window.CURRENT_DATE = new Date();
-
-setInterval(function () {
-    CURRENT_DATE = new Date();
-}, 1000);
 
 window.clickTimer = 0;
 window.clickDelay = 200;
 window.preventClick = false;
 
-
+window.RESDND = false;
 /* AUXILIARY FUNCTIONS */
+
+
+function updateTimemark() {
+    if (VIEW_MODE === 0 || VIEW_MODE === 1) {
+        let timemark = $($('.timemark')[0]);
+        let currTime = CURRENT_DATE.getHours() * TIME_STEP * 4 + CURRENT_DATE.getMinutes();
+
+        timemark.css('top', currTime - 7);
+    }
+}
+
 
 function getCurrWeekDates(date) {
     let currWeekDates = [];
@@ -65,6 +71,27 @@ function getCurrWeekDates(date) {
     }
     return currWeekDates;
 
+}
+
+
+function getCurrMonthDates(date) {
+    let auxDate = new Date(date.getFullYear(), date.getMonth(), 1);
+
+    while (auxDate.getDay() !== 1) {
+        auxDate.setDate(auxDate.getDate() - 1);
+    }
+
+    let currMonthDates = [6];
+
+    for (let i=0; i < 6; i++) {
+        currMonthDates[i] = [];
+        for (let j=0; j < 7; j++) {
+            currMonthDates[i][j] = new Date(auxDate.getTime());
+            auxDate.setDate(auxDate.getDate() + 1);
+        }
+    }
+
+    return currMonthDates;
 }
 
 
@@ -111,12 +138,17 @@ function convertPositionToTime(newEvent) {
     let topOffset = parseInt(newEvent.style.top);
     let height = parseInt(newEvent.style.height);
 
-    let startHours, startMinutes, endHours, endMinutes, timenote;
+    let startHours, startMinutes, endHours, endMinutes;
 
     startHours =  Math.floor(topOffset / 60);
     startMinutes = topOffset % 60;
     endHours = Math.floor((topOffset + height) / 60);
     endMinutes = (topOffset + height) % 60;
+
+    if (endHours === 24 && endMinutes === 0) {
+        endHours = 23;
+        endMinutes = 59;
+    }
 
     return {
         'startHours': startHours,
@@ -145,6 +177,11 @@ function converTimeToPosition(startDate, endDate) {
 function getTimeNote(eventElement) {
 
     let {startHours, startMinutes, endHours, endMinutes} = convertPositionToTime(eventElement);
+
+    if (endHours === 23 && endMinutes === 59) {
+        endHours = 0;
+        endMinutes = 0;
+    }
 
     let startHoursStr = startHours < 10 ? TIME_EDITS[startHours] : startHours;
     let startMinutesStr = startMinutes < 10 ? TIME_EDITS[startMinutes] : startMinutes;
@@ -182,8 +219,7 @@ function setHeaderDateInfo(weekFirstDate, weekLastDate) {
 
                 break;
             case 2:
-                dateInfo = "NOT IMPLEMENTED";
-                console.log('at 2');
+                dateInfo = MONTHS[weekFirstDate.getMonth()][0] + " " + weekFirstDate.getFullYear();
                 break;
             case 3:
                 dateInfo = "NOT IMPLEMENTED";
@@ -195,9 +231,12 @@ function setHeaderDateInfo(weekFirstDate, weekLastDate) {
 }
 
 
-function createNewEvent({topOffset, height = 0, title = "(No Title)", color = "#7587C7" }) {
-    let newEvent = document.createElement('div');
+function createNewEvent({topOffset, height = 0,
+                            title = "(No Title)", color = "#7587C7",
+                            id = ""}) {
 
+    let newEvent = document.createElement('div');
+    newEvent.setAttribute("data-event-id", id);
     let eventTitle = document.createElement('div');
     eventTitle.innerText = title;
     eventTitle.classList.add('event-content', 'event-title');
@@ -207,6 +246,14 @@ function createNewEvent({topOffset, height = 0, title = "(No Title)", color = "#
 
     newEvent.appendChild(eventTitle);
     newEvent.appendChild(eventTimenote);
+
+    // TEMP [testing event resizing]
+    let stretchBox = document.createElement('div');
+    stretchBox.classList.add('stretch-box');
+    newEvent.appendChild(stretchBox);
+    addEventListenersForResizing(newEvent);
+    // testing end
+
     newEvent.classList.add('event');
     newEvent.addEventListener('click', handleClickOnEvent);
     newEvent.addEventListener('dblclick', handleDblClickOnEvent);
@@ -214,7 +261,184 @@ function createNewEvent({topOffset, height = 0, title = "(No Title)", color = "#
     newEvent.style.top = topOffset + 'px';
     newEvent.style.backgroundColor = color;
 
+    addEventListenersForDragAndDrop(newEvent);
+
     return newEvent;
+}
+
+
+function addEventListenersForResizing(eventObj) {
+    let stretchBox = eventObj.getElementsByClassName('stretch-box')[0];
+    let currViewBody = document.getElementById('content').childNodes[1];
+    let isMousedown = false;
+    let eventTimeNote, eventStartPoint, prevY, topPanelHeight, scrollTopPos, scrollTopPos_delta;
+    $(stretchBox).on({
+        mousedown: function (e) {
+            if (e.target === stretchBox && $('#eventCreationDialog').css('display') === 'none') {
+                if (e.which === 1) {
+                    RESDND = true;
+                    isMousedown = true;
+                    prevY = e.pageY; // aux.variable for identifying mouse movement direction
+                    eventStartPoint = Math.round(parseFloat(eventObj.style.top) / TIME_STEP) * TIME_STEP; // event start point (always starts from the point that is multiple of 15 min)
+                    topPanelHeight = e.pageY - parseFloat(eventObj.style.height) - eventStartPoint; // have to consider the offset of working area
+
+                    // scrolling offset
+                    scrollTopPos = currViewBody.scrollTop;
+                    scrollTopPos_delta = 0;
+
+                    eventTimeNote = eventObj.getElementsByClassName('event-timenote')[0];
+                    eventObj.classList.toggle('event');
+                    eventObj.classList.toggle('event-modifying');
+                    currViewBody.classList.toggle('cursor-resize');
+
+                } // interested only in left mouse key down
+            } // free working area was a target of mousedown event
+        },
+    });
+
+    $(currViewBody).on({
+        mousemove: function (e) {
+
+            if (isMousedown) {
+
+                if (Math.abs(prevY - e.pageY) >= TIME_STEP) {
+
+                    scrollTopPos_delta = currViewBody.scrollTop - scrollTopPos;
+
+                    if (e.pageY + scrollTopPos_delta - topPanelHeight > eventStartPoint) {
+
+                        if (eventObj.style.top !== eventStartPoint) eventObj.style.top = eventStartPoint + 'px'; // direction was changed
+
+                        if (Math.round((e.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta) / TIME_STEP) >= 3) {
+                            eventObj.style.height = Math.round((e.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta) / TIME_STEP) * TIME_STEP + 'px';
+                        } else {
+                            eventObj.style.height = TIME_STEP * 3 + 'px';
+                        } // event can not be shorter than 45 minutes
+
+                    } // resizing after breakpoint
+                    else {
+
+                        if (Math.round((Math.abs(e.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta)) / TIME_STEP) >= 3) {
+                            eventObj.style.top = Math.round((Math.abs(e.pageY - topPanelHeight + scrollTopPos_delta)) / TIME_STEP) * TIME_STEP + 'px';
+                            eventObj.style.height = Math.round((Math.abs(e.pageY - topPanelHeight - eventStartPoint + scrollTopPos_delta)) / TIME_STEP) * TIME_STEP + 'px';
+                        } // event can not be shorter than 45 minutes
+
+                    } // resizing before breakpoint
+
+                    // save previous cursor position
+                    prevY = e.pageY;
+
+                    // update event time note
+                    eventTimeNote.innerText = getTimeNote(eventObj);
+                } // movement is reasonable
+            } // changing a new event duration only if left mouse key is down
+        }
+    });
+
+    $('#content').on({
+        mouseup: function (e) {
+            if (isMousedown) {
+                eventObj.style.height -= 2 + 'px'; // to make margin
+                isMousedown = false;
+                eventObj.classList.toggle('event-modifying');
+                eventObj.classList.toggle('event');
+                currViewBody.classList.toggle('cursor-resize');
+                updateEvent(eventObj);
+            } // the mousedown event was generated in free working area
+        },
+    });
+}
+
+
+function addEventListenersForDragAndDrop(eventObj) {
+
+    // prevent embedded browser behavior for drag&drop
+    eventObj.ondragstart = function () {
+        return false;
+    };
+
+    let wasMovedHorizontally = false;
+
+    $(eventObj).on({
+        mousedown: function (e) {
+            if (e.target !== eventObj.lastChild) {
+
+
+
+                let currViewBody = document.getElementById('content').childNodes[1];
+                let eventStartPoint, eventTimeNote, prevY, topPanelHeight, scrollTopPos, scrollTopPos_delta;
+                eventStartPoint = Math.round(parseFloat(eventObj.style.top) / TIME_STEP) * TIME_STEP; // event start point (always starts from the point that is multiple of 15 min)
+                topPanelHeight = e.pageY - parseFloat(eventObj.style.height) - eventStartPoint; // have to consider the offset of working area
+                eventTimeNote = eventObj.getElementsByClassName('event-timenote')[0];
+
+                prevY = e.pageY;
+                // scrolling offset
+                scrollTopPos = currViewBody.scrollTop;
+                scrollTopPos_delta = 0;
+
+                eventObj.classList.toggle('event');
+                eventObj.classList.toggle('event-modifying');
+                eventObj.classList.toggle('cursor-grab');
+
+                function moveAt(pageY) {
+                    scrollTopPos_delta = currViewBody.scrollTop - scrollTopPos;
+                    let top = Math.round((pageY - topPanelHeight
+                        + scrollTopPos_delta - eventObj.offsetHeight / 2
+                        - parseFloat(eventObj.style.height) / 2) / TIME_STEP) * TIME_STEP;
+                    eventObj.style.top = top >= 0 && top <= (1440 - parseInt(eventObj.style.height)) ? top + 'px' : eventObj.style.top;
+                    eventTimeNote.innerText = getTimeNote(eventObj);
+                }
+
+                function onMouseMove(e) {
+                    if (Math.abs(prevY - e.pageY) >= TIME_STEP) {
+                        RESDND = true;
+                        prevY = e.pageY;
+                        moveAt(e.pageY);
+                    }
+                }
+
+                document.addEventListener('mousemove', onMouseMove);
+
+                function onMouseLeave(e) {
+                    if (e.target !== e.relatedTarget) {
+                        if (e.relatedTarget.classList.contains('week-view-body-col')) {
+                            e.relatedTarget.appendChild(eventObj);
+                        }
+                        else if (e.relatedTarget.parentNode.classList.contains('week-view-body-col')) {
+                            e.relatedTarget.parentNode.appendChild(eventObj);
+                        }
+                        else if (e.relatedTarget.parentNode.parentNode.classList.contains('week-view-body-col')) {
+                            e.relatedTarget.parentNode.parentNode.appendChild(eventObj);
+                        }
+                        RESDND = true;
+                        wasMovedHorizontally = true;
+                    }
+                }
+
+                $('.week-view-body-col').on('mouseleave', onMouseLeave);
+
+                function onMouseUp (e) {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                    $('.week-view-body-col').unbind('mouseleave', onMouseLeave);
+
+                    eventObj.classList.toggle('event');
+                    eventObj.classList.toggle('event-modifying');
+                    eventObj.classList.toggle('cursor-grab');
+
+                    if (RESDND) {
+                        updateEvent(eventObj);
+                    }
+                    if (wasMovedHorizontally) {
+                        RESDND = false;
+                        wasMovedHorizontally = false;
+                    } // if was moved hor-lly --> 'click' event for eventObj doesn't appear --> issues with next click
+                }
+
+                document.addEventListener('mouseup', onMouseUp);
+            }
+        }
+    })
 }
 
 
@@ -309,7 +533,8 @@ function changeEventCreationDialogPosition() {
 
 function saveNewEvent() {
     $('#eventCreationDialog').hide();
-    newEvent.style.opacity = 1;
+    newEvent.classList.toggle('event');
+    newEvent.classList.toggle('event-modifying');
     let dates = createTimestampsForGeneratedEvent(newEvent);
 
     $.ajax({
@@ -323,19 +548,50 @@ function saveNewEvent() {
         dataType: 'json',
         success: function (data) {
             if (data.flag) {
-                console.log('SUCCESS!');
+                newEvent.setAttribute("data-event-id", data.eventId);
+                console.log('SUCCESS! [new event has been added to DB, id - ' + data.eventId + ']');
             }
         }
     })
 }
 
 
-function showEventPreview(e) {
-    alert('click');
+function updateEvent(eventObj) {
+    let {startDate, endDate} = createTimestampsForGeneratedEvent(eventObj);
+
+    $.ajax({
+        type: 'POST',
+        url: 'update_event/',
+        data: {
+            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+            id: eventObj.getAttribute("data-event-id"),
+            start_date: JSON.stringify(startDate.toString()),
+            end_date: JSON.stringify(endDate.toString()),
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.flag) {
+                console.log('SUCCESS! [changes have been saved]');
+            }
+        }
+    })
+}
+
+
+function showEventPreview(e, eventObj) {
+    if (!RESDND) {
+        //eventObj.classList.toggle('cursor-grab');
+        //eventObj.classList.toggle('cursor-pointer');
+
+        alert(e.type);
+    }
+    else {
+        RESDND = false;
+    }
 }
 
 function showEventEditor(e) {
-    alert(('double click'));
+    alert(e.type);
 }
 
 
@@ -344,8 +600,7 @@ function buildCalendar(id, year, month) {
         D = new Date(year,month,Dlast),
     	DNlast = new Date(D.getFullYear(),D.getMonth(),Dlast).getDay(),
     	DNfirst = new Date(D.getFullYear(),D.getMonth(),1).getDay(),
-    	calendar = '<tr>',
-        month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    	calendar = '<tr>';
 
     if (DNfirst !== 0) {
         for(let i = 1; i < DNfirst; i++) calendar += '<td>';
@@ -371,7 +626,7 @@ function buildCalendar(id, year, month) {
     for(var  i = DNlast; i < 7; i++) calendar += '<td>&nbsp;';
 
     document.querySelector('#'+id+' tbody').innerHTML = calendar;
-    document.querySelector('#'+id+' thead td:nth-child(2)').innerHTML = month[D.getMonth()] +' '+ D.getFullYear();
+    document.querySelector('#'+id+' thead td:nth-child(2)').innerHTML = MONTHS[D.getMonth()][0] +' '+ D.getFullYear();
     document.querySelector('#'+id+' thead td:nth-child(2)').dataset.month = D.getMonth();
     document.querySelector('#'+id+' thead td:nth-child(2)').dataset.year = D.getFullYear();
     if (document.querySelectorAll('#'+id+' tbody tr').length < 6) {  // чтобы при перелистывании месяцев не "подпрыгивала" вся страница, добавляется ряд пустых клеток. Итог: всегда 6 строк для цифр
@@ -381,7 +636,7 @@ function buildCalendar(id, year, month) {
 
 
 function addInboxTask(e) {
-    if ($("input[name='taskName']").val() !== 0) {
+    if ($("input[name='taskName']").val() !== "") {
         let inboxTask = document.createElement('div');
         $(inboxTask).attr("id", "inboxTask");
         $(inboxTask).attr("class", 'row');
@@ -415,9 +670,10 @@ function addInboxTask(e) {
 /* COMMON EVENT HANDLERS */
 
 function handleClickOnEvent(e) {
+    let eventObj = this;
     clickTimer = setTimeout(function() {
       if (!preventClick) {
-        showEventPreview(e);
+          showEventPreview(e, eventObj);
       }
       preventClick = false;
     }, clickDelay);
@@ -434,6 +690,12 @@ function handleDblClickOnEvent(e) {
 
 $(document).ready(function () {
 
+    // current date updating each 1 minute + timemark position updating
+    setInterval(function () {
+        CURRENT_DATE = new Date();
+        updateTimemark();
+    }, 1000);
+    
     // sidebar calendar building
     buildCalendar("calendar2", new Date().getFullYear(), new Date().getMonth());
 
@@ -451,7 +713,9 @@ $(document).ready(function () {
     // sidebar button click
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar, #content').toggleClass('active');
-        $('.timeline-item').toggleClass('act');
+        $('.timeline-item, .timemark').toggleClass('act');
+        IS_SIDEBAR_ON = IS_SIDEBAR_ON === 1 ? 0 : 1;
+        saveUserViewSettings();
     });
 
     // addTask button/"enter press" handler (inbox container)

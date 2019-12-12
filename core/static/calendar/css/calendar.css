@@ -177,7 +177,7 @@ select {
     display: none;
     flex-direction: column;
     align-items: center;
-    z-index: 10;
+    z-index: 25;
     position: absolute;
     width: 450px;
     height: 300px;
