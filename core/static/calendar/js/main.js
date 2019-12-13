@@ -363,8 +363,6 @@ function addEventListenersForDragAndDrop(eventObj) {
         mousedown: function (e) {
             if (e.target !== eventObj.lastChild) {
 
-
-
                 let currViewBody = document.getElementById('content').childNodes[1];
                 let eventStartPoint, eventTimeNote, prevY, topPanelHeight, scrollTopPos, scrollTopPos_delta;
                 eventStartPoint = Math.round(parseFloat(eventObj.style.top) / TIME_STEP) * TIME_STEP; // event start point (always starts from the point that is multiple of 15 min)
@@ -376,8 +374,12 @@ function addEventListenersForDragAndDrop(eventObj) {
                 scrollTopPos = currViewBody.scrollTop;
                 scrollTopPos_delta = 0;
 
-                eventObj.classList.toggle('event');
-                eventObj.classList.toggle('event-modifying');
+                let isSaved = eventObj.getAttribute('data-event-id') !== "";
+
+                if (isSaved) {
+                    eventObj.classList.toggle('event');
+                    eventObj.classList.toggle('event-modifying');
+                } // during event creation the user has decided to replace event
                 eventObj.classList.toggle('cursor-grab');
 
                 function moveAt(pageY) {
@@ -422,12 +424,17 @@ function addEventListenersForDragAndDrop(eventObj) {
                     document.removeEventListener('mouseup', onMouseUp);
                     $('.week-view-body-col').unbind('mouseleave', onMouseLeave);
 
-                    eventObj.classList.toggle('event');
-                    eventObj.classList.toggle('event-modifying');
+                    if (isSaved) {
+                        eventObj.classList.toggle('event');
+                        eventObj.classList.toggle('event-modifying');
+                    } // during event creation the user has decided to replace event
                     eventObj.classList.toggle('cursor-grab');
 
-                    if (RESDND) {
-                        updateEvent(eventObj);
+                    if (isSaved) {
+                        if (RESDND) updateEvent(eventObj);
+                    }
+                    else {
+                        showEventCreationDialog(e);
                     }
                     if (wasMovedHorizontally) {
                         RESDND = false;
@@ -462,12 +469,27 @@ function createTimestampsForGeneratedEvent(newEvent) {
 }
 
 
-function showEventCreationDialog(newEvent, e) {
-    let eventCreationDialog = document.getElementById('eventCreationDialog');
+function showEventCreationDialog(e) {
+    let eventCreationDialog = $('#eventCreationDialog');
     let {startDate, endDate} = createTimestampsForGeneratedEvent(newEvent);
     document.getElementById('duration').innerText = startDate + " ---- " + endDate;
+    newEvent.classList.toggle('cursor-pointer');
 
-    $(eventCreationDialog).show();
+    $('#eventCreationDialog .color-picker span').on('click', function (e) {
+        $('#eventCreationDialog .color-picker .active-color').removeClass('active-color');
+            this.classList.add('active-color');
+            newEvent.style.backgroundColor = $(this).css('background-color');
+        }
+    );
+
+    $('#closeBtn').on('click', function () {
+        eventCreationDialog.hide();
+        eventCreationDialog.css({'top': innerHeight / 2, 'left': innerWidth / 2});
+        cleanEventCreationDialog();
+        newEvent.remove();
+    });
+
+    eventCreationDialog.show();
 
     changeEventCreationDialogPosition();
     e.stopPropagation(); // to prevent immediate event creation dialog closing
@@ -531,11 +553,25 @@ function changeEventCreationDialogPosition() {
 }
 
 
+function cleanEventCreationDialog() {
+    $('#eventCreationDialog .title input').val("");
+    $('#eventCreationDialog .color-picker .active-color').removeClass('active-color');
+    $('#eventCreationDialog .color-picker .lavender').addClass('active-color');
+}
+
+
 function saveNewEvent() {
     $('#eventCreationDialog').hide();
     newEvent.classList.toggle('event');
     newEvent.classList.toggle('event-modifying');
+
     let dates = createTimestampsForGeneratedEvent(newEvent);
+
+    let title = document.querySelector('#eventCreationDialog .title input').value;
+    title = title.length !== 0 ? title : "(No title)";
+    newEvent.querySelector(".event-title").innerText = title;
+
+    let color = $('#eventCreationDialog .color-picker .active-color').css('background-color');
 
     $.ajax({
         type: 'POST',
@@ -544,6 +580,8 @@ function saveNewEvent() {
             csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
             start_date: JSON.stringify(dates.startDate.toString()),
             end_date: JSON.stringify(dates.endDate.toString()),
+            title: title,
+            color: color,
         },
         dataType: 'json',
         success: function (data) {
@@ -552,7 +590,9 @@ function saveNewEvent() {
                 console.log('SUCCESS! [new event has been added to DB, id - ' + data.eventId + ']');
             }
         }
-    })
+    });
+
+    cleanEventCreationDialog();
 }
 
 
@@ -727,14 +767,14 @@ $(document).ready(function () {
 
     // event creation dialog is closed if the user clicks out it
     $(document).on({
-        mouseup: function (e) {
+        mousedown: function (e) {
             var eventCreationDialog = $('#eventCreationDialog');
 
             if (eventCreationDialog.css('display') !== 'none' && !eventCreationDialog.is(e.target)
                 && eventCreationDialog.has(e.target).length === 0) {
                 eventCreationDialog.hide();
                 eventCreationDialog.css({'top': innerHeight / 2, 'left': innerWidth / 2});
-
+                newEvent.classList.toggle('cursor-pointer');
                 if (!$(newEvent).is(e.target) && $(newEvent).has(e.target).length === 0) newEvent.remove();
             }},
     });

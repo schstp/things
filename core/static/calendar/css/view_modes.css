@@ -295,6 +295,7 @@
 }
 
 .event-title {
+    overflow: hidden;
     font-weight: bold;
     font-size: 80%;
 }

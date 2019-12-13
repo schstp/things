@@ -176,7 +176,7 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
                 isMousedown = false;
 
                 // event creation dialog call
-                showEventCreationDialog(newEvent, e);
+                showEventCreationDialog(e);
                 content.classList.toggle('cursor-grab');
             } // the mousedown event was generated in free working area
         },
@@ -241,7 +241,7 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
                 isMousedown = false;
 
                 // event creation dialog call
-                showEventCreationDialog(newEvent, e);
+                showEventCreationDialog(e);
                 content.classList.toggle('cursor-grab');
             } // the mousedown event was generated in free working area
         },

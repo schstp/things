@@ -163,7 +163,7 @@ function buildDayView (parentElement, dayViewHeaderID, dayViewBodyID, date) {
                 isMousedown = false;
 
                 // event creation dialog call
-                showEventCreationDialog(newEvent, e);
+                showEventCreationDialog(e);
 
                 content.classList.toggle('cursor-grab');
 
@@ -231,7 +231,7 @@ function buildDayView (parentElement, dayViewHeaderID, dayViewBodyID, date) {
                 isMousedown = false;
 
                 // event creation dialog call
-                showEventCreationDialog(newEvent, e);
+                showEventCreationDialog(e);
 
                 content.classList.toggle('cursor-grab');
 

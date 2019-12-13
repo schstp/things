@@ -175,8 +175,6 @@ select {
 
 #eventCreationDialog {
     display: none;
-    flex-direction: column;
-    align-items: center;
     z-index: 25;
     position: absolute;
     width: 450px;
@@ -185,6 +183,102 @@ select {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 7px;
     transition: all 0.3s;
+}
+
+#eventCreationDialog .new-event-content {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height: 250px;
+    margin-top: 2%;
+    margin-left: 10%;
+}
+
+#closeBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    width: 46px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+#closeBtn:hover {
+    background-color: #e3e3e3;
+    cursor: pointer;
+}
+
+#eventCreationDialog .title {
+    min-width: fit-content;
+}
+
+#eventCreationDialog .title input {
+    width: 390px;
+    overflow: hidden;
+    border: none;
+    border-bottom: solid 2px #0088E0;
+
+    font-size: 1.2em;
+}
+
+
+#eventCreationDialog .title input:focus{
+    outline: none;
+}
+
+#eventCreationDialog .color-picker {
+    display: flex;
+    max-height: fit-content;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#eventCreationDialog .color-picker span{
+    display: block;
+    width: 25px;
+    height: 25px;
+    margin-left: 3px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+#eventCreationDialog .color-picker span:hover {
+    cursor: pointer;
+}
+
+#eventCreationDialog .color-picker .sage {
+    background-color: #00B67D;
+}
+
+#eventCreationDialog .color-picker .peacock {
+    background-color: #009CE0;
+}
+
+#eventCreationDialog .color-picker .lavender {
+    background-color: #7587C7;
+}
+
+#eventCreationDialog .color-picker .banana {
+    background-color: #FFBE46;
+}
+
+#eventCreationDialog .color-picker .blueberry {
+    background-color: #3852B0;
+}
+
+#eventCreationDialog .color-picker .grape {
+    background-color: #9A24A5;
+}
+
+#eventCreationDialog .color-picker .tangerine {
+    background-color: #FF4D31;
+}
+
+.active-color {
+    border: solid 1px #2f2f2f;
+    box-shadow: 0 4px 8px 0 rgba(0, 136, 224, 0.31), 0 6px 20px 0 rgba(0, 136, 224, 0.3);
 }
 
 #saveEventBtn {
