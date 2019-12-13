@@ -23,6 +23,7 @@ window.TIME_EDITS = {0: '00', 1: '01', 2: '02', 3: '03', 4: '04', 5: '05', 6: '0
 window.TIME_STEP = 15;
 window.BASE_DATE = new Date();
 window.CURRENT_DATE = new Date();
+window.SELECTED_DATE = new Date();
 
 window.clickTimer = 0;
 window.clickDelay = 200;
@@ -758,8 +759,9 @@ function addInboxTask(e) {
         $(inboxTask).attr("id", "inboxTask");
         $(inboxTask).attr("class", 'row');
         let taskLabel = document.createElement('div');
-        $(taskLabel).addClass("col-sm-8");
+        $(taskLabel).addClass("col-sm-10");
         var text = $("input[name='taskName']").val();
+        //console.log(text);
         $(taskLabel).text(text);
 
         let inboxButton = document.createElement('button');
@@ -780,6 +782,7 @@ function addInboxTask(e) {
         $(inboxTask).append(taskLabel);
         $(inboxTask).append(inboxButton);
         $('#taskInbox').append(inboxTask);
+        $("input[name='taskName']").val("");
     }
 }
 
@@ -818,14 +821,50 @@ $(document).ready(function () {
 
     // переключатель минус месяц
 	document.querySelector('#calendar2 thead tr:nth-child(1) td:nth-child(1)').onclick = function() {
+    if ($('.selected').text() !== "") {
+        var selectedDay = $('.selected').text();
+        console.log(selectedDay);
+        var selectedMonth = $('#dateHeader').attr('data-month');
+        var selectedYear = $('#dateHeader').attr('data-year');
+        SELECTED_DATE = new Date(selectedYear, selectedMonth, selectedDay);
+    }
   	buildCalendar("calendar2", document.querySelector('#calendar2 thead td:nth-child(2)').dataset.year,
         parseFloat(document.querySelector('#calendar2 thead td:nth-child(2)').dataset.month)-1);
+    if (parseInt($('#dateHeader').attr('data-month')) === SELECTED_DATE.getMonth())
+    {
+        //$('td:contains(' + BASE_DATE.getDate() + ')').addClass('selected')
+        $('td').each(function() {
+            if (SELECTED_DATE.getDate() === parseInt($(this).text()))
+            {
+                $(this).addClass('selected');
+            }
+        });
+        
+    }
 	};
 	// переключатель плюс месяц
 	document.querySelector('#calendar2 thead tr:nth-child(1) td:nth-child(3)').onclick = function() {
-  	buildCalendar("calendar2", document.querySelector('#calendar2 thead td:nth-child(2)').dataset.year,
+    if ($('.selected').text() !== "") {
+        var selectedDay = $('.selected').text();
+        console.log(selectedDay);
+        var selectedMonth = $('#dateHeader').attr('data-month');
+        var selectedYear = $('#dateHeader').attr('data-year');
+        SELECTED_DATE = new Date(selectedYear, selectedMonth, selectedDay);
+    }
+    buildCalendar("calendar2", document.querySelector('#calendar2 thead td:nth-child(2)').dataset.year,
         parseFloat(document.querySelector('#calendar2 thead td:nth-child(2)').dataset.month)+1);
-	};
+    if (parseInt($('#dateHeader').attr('data-month')) === SELECTED_DATE.getMonth())
+    {
+        //$('td:contains(' + BASE_DATE.getDate() + ')').addClass('selected')
+        $('td').each(function() {
+            if (SELECTED_DATE.getDate() === parseInt($(this).text()))
+            {
+                $(this).addClass('selected');
+            }
+        });
+        
+    }
+    };
 
     // sidebar button click
     $('#sidebarCollapse').on('click', function () {

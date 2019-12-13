@@ -61,28 +61,35 @@ select {
 }
 
 .createEventButton {
-    margin-left: 7%; 
-    margin-top: 3%; 
-    width: 85%;
+    margin-left: 0%; 
+    margin-top: 0%; 
+    width: 100%;
     outline: none;
+    height: 7%;
 }
 
 .inboxOuterBorder {
     border-style: solid; 
     border-color: #000; 
-    margin-top: 3%; 
-    width: 85%; 
-    margin-left: 7%;
+    border-width: 1px;
+    margin-top: 5%; 
+    width: 100%;
+    height: 70%;
+    margin-left: 0%;
+    display: flex;
+    flex-direction: column;
 }
 
 .inboxLabelContainer {
     height: 40px; 
     background-color: #c2c2c2;
+    text-align: center;
 }
 
 .inboxLabel {
     color: black; 
-    margin-left: 150%;
+
+    outline: none;
 }
 
 #addTask {
@@ -102,8 +109,8 @@ select {
 #taskInbox {
     margin-top: 0;
     width: 100%; 
-    height: 47vh;
     overflow-y: scroll;
+    height: 100%;
     
 }
 
@@ -130,6 +137,8 @@ select {
     background: #d7dae0;
     color: #fff;
     transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
 }
 
 #sidebar.active {
@@ -336,14 +345,503 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 #calendar2 {
-  width: 85%;
+  width: 100%;
+  height: 23%;
   line-height: 1.2em;
   font-size: 15px;
   text-align: center;
   border-style: solid;
   border-color: #000;
-  margin-top: 3%;
-  margin-left: 7%;
+  border-width: 1px;
+  margin-top: 5%;
+  margin-left: 0%;
+}
+
+#calendar2:hover {
+    cursor: pointer;
+}
+#calendar2 thead tr:last-child {
+  font-size: small;
+  color: rgb(85, 85, 85);
+  background-color: #c2c2c2;
+}
+#calendar2 thead tr:nth-child(1) td:nth-child(2) {
+  color: rgb(50, 50, 50);
+  background-color: #757575;
+}
+#calendar2 thead tr:nth-child(1) td:nth-child(1):hover, #calendar2 thead tr:nth-child(1) td:nth-child(3):hover {
+  cursor: pointer;
+  color: #000;
+}
+#calendarArrow {
+    color: #000;
+    background-color: #757575;
+}
+#calendar2 tbody td {
+    color: #000;
+}
+#calendar2 tbody td:nth-child(n+6), #calendar2 .holiday {
+    color: #000;
+}
+#calendar2 tbody td.today {
+    background: rgb(0, 11, 255);
+    color: #fff;
+}
+#calendar2 tbody td.selected {
+    background: #000;
+    color: #fff;
+}
+
+::-webkit-scrollbar-button {
+    background-image:url('');
+    background-repeat:no-repeat;
+    width:5px;
+    height:0;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #ecedee
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    background-color: #c2c2c2;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background-color: #757575;
+}
+
+::-webkit-resizer{
+    background-image: url('');
+    background-repeat: no-repeat;
+    width: 4px;
+    height: 0;
+}
+
+::-webkit-scrollbar{
+    width: 4px;
+}
+
+.searchPanel{
+    display: flex;
+    width: auto;
+    z-index: 100;
+}
+
+.cancelLabel{
+    width: 202px;
+    margin-left: 10px;
+    margin-bottom: auto;
+    margin-top: auto;
+}
+
+.searchBox{
+    position: relative;
+    display: flex;
+    width: 490px;
+}
+
+.searchInput{
+    width: inherit;
+}
+
+.eventBoxes{
+    display: none;
+    flex-direction: column;  
+    position: absolute;
+    top: 40px;
+    list-style-type: none;
+    padding-left: 0px;
+    width: inherit;
+    background-color: white;
+}
+
+.eventBox{
+    position: relative;
+    display: flex;
+    width: inherit;
+    border-style: solid;
+    border-width: 1.5px;
+    border-color: rgb(68, 170, 233);
+    border-bottom-style: hidden;
+}
+
+.eventBox:last-child{
+    position: relative;
+    display: flex;
+    width: inherit;
+    border-bottom-style: solid;
+}
+
+.eventBoxLeft{
+    margin-left: 5px;
+    color: black;
+    font-weight: bold;
+}
+
+.eventBoxRight{
+    color: black;
+    margin-left: auto;
+    margin-right: 5px;
+}.wrapper {
+    display: flex;
+    flex-flow: column;
+    min-width:1064px;
+    height: calc(100vh - 60px);
+}
+
+.working-area-wrapper {
+    display: flex;
+    height: 100%;
+}
+
+.top-bar {
+    display: flex;
+    flex-flow: row;
+    height: 60px;
+    padding: 10px;
+    border-bottom: solid gray 1px;
+}
+
+.navbar-fixed-section-wrapper {
+    display: flex;
+    width:670px;
+}
+
+.navbar-fixible-section-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.collapse-button-container {
+    width: 35px;
+    display: flex;
+}
+
+.today-button-container {
+    width: 225px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.today-button-container button {
+    width: 140px;
+}
+
+.viewscroll-buttons-container {
+    width: 150px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.date-label-container {
+    width: 250px;
+    display: flex;
+}
+
+select {
+    width: 120px;
+    margin: 0 40px 0 15px;
+}
+
+.createEventButton {
+    margin-left: 0%; 
+    margin-top: 0%; 
+    width: 100%;
+    outline: none;
+    height: 7%;
+}
+
+.inboxOuterBorder {
+    border-style: solid; 
+    border-color: #000; 
+    border-width: 1px;
+    margin-top: 5%; 
+    width: 100%;
+    height: 70%;
+    margin-left: 0%;
+    display: flex;
+    flex-direction: column;
+}
+
+.inboxLabelContainer {
+    height: 40px; 
+    background-color: #c2c2c2;
+    text-align: center;
+}
+
+.inboxLabel {
+    color: black; 
+
+    outline: none;
+}
+
+#addTask {
+    margin-top: 3%; 
+    margin-left: 7%; 
+    height: 35px; 
+    border: 0; 
+    background-color: transparent;
+    outline: none;
+}
+
+#taskName {
+    width: 78%;
+    outline: none;
+}
+
+#taskInbox {
+    margin-top: 0;
+    width: 100%; 
+    overflow-y: scroll;
+    height: 100%;
+    
+}
+
+#inboxTask {
+    margin-left: -3vh;
+    width: 112%;
+    word-wrap: break-word;
+}
+
+#deleteTask {
+    outline: none;
+    border: 0; 
+    background-color: transparent;
+    padding: 0;
+    margin-left: 16px;
+    height: 18px;
+    width: 18px;
+}
+
+#sidebar {
+    width: 270px;
+    padding: 5px;
+    z-index: 1;
+    background: #d7dae0;
+    color: #fff;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+#sidebar.active {
+    margin-left: -270px;
+}
+
+#content {
+    display: flex;
+    flex-flow: column;
+    width: calc(100% - 270px);
+    padding: 5px;
+    background-color: white;
+    transition: all 0.3s;
+}
+
+#content.active {
+    width: 100%;
+}
+
+.icons {
+    height: 35px;
+    width: 35px;
+}
+
+#dateInfo {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 30px;
+    font-size: 1.4em;
+    color: black;
+}
+
+.transp-button {
+    background-color: transparent;
+    border: none;
+    cursor:pointer;
+}
+
+.no-transfer {
+    width: min-content;
+    display: inline-block;
+}
+
+#eventCreationDialog {
+    display: none;
+    z-index: 25;
+    position: absolute;
+    width: 450px;
+    height: 300px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 7px;
+    transition: all 0.3s;
+}
+
+input[type="date"] {
+    outline: none;
+    border: none;
+    border-bottom: solid 2px #0088E0;
+}
+
+input[type="date"]::-webkit-clear-button {
+    display: none;
+}
+
+input[type="date"]::-webkit-inner-spin-button {
+  display: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  font-size: 15px;
+}
+
+#eventCreationDialog .new-event-content {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height: 250px;
+    margin-top: 2%;
+    margin-left: 10%;
+}
+
+#closeBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    width: 46px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+#closeBtn:hover {
+    background-color: #e3e3e3;
+    cursor: pointer;
+}
+
+#eventCreationDialog .title {
+    min-width: fit-content;
+}
+
+#eventCreationDialog .title input {
+    width: 390px;
+    overflow: hidden;
+    border: none;
+    border-bottom: solid 2px #0088E0;
+
+    font-size: 1.2em;
+}
+
+
+#eventCreationDialog .title input:focus{
+    outline: none;
+}
+
+#eventCreationDialog .color-picker {
+    display: flex;
+    max-height: fit-content;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#eventCreationDialog .color-picker span{
+    display: block;
+    width: 25px;
+    height: 25px;
+    margin-left: 3px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+#eventCreationDialog .color-picker span:hover {
+    cursor: pointer;
+}
+
+#eventCreationDialog .color-picker .sage {
+    background-color: #00B67D;
+}
+
+#eventCreationDialog .color-picker .peacock {
+    background-color: #009CE0;
+}
+
+#eventCreationDialog .color-picker .lavender {
+    background-color: #7587C7;
+}
+
+#eventCreationDialog .color-picker .banana {
+    background-color: #FFBE46;
+}
+
+#eventCreationDialog .color-picker .blueberry {
+    background-color: #3852B0;
+}
+
+#eventCreationDialog .color-picker .grape {
+    background-color: #9A24A5;
+}
+
+#eventCreationDialog .color-picker .tangerine {
+    background-color: #FF4D31;
+}
+
+.active-color {
+    border: solid 1px #2f2f2f;
+    box-shadow: 0 4px 8px 0 rgba(0, 136, 224, 0.31), 0 6px 20px 0 rgba(0, 136, 224, 0.3);
+}
+
+.date-picker {
+    display: flex;
+}
+
+.time-selectors {
+    margin-left: 5px;
+}
+
+.time-selectors select {
+    position: absolute;
+    width: 80px;
+}
+
+#fromSelector {
+    right: 90px;
+}
+
+#toSelector {
+    right: 15px;
+    margin: 0;
+}
+
+.time-selectors label[for="fromSelector"] {
+    margin: 0;
+    margin-left: 4px;
+}
+
+.time-selectors label[for="toSelector"] {
+    margin: 0;
+    margin-left: 92px;
+}
+
+#saveEventBtn {
+    width: 100px;
+}
+
+#calendar2 {
+  width: 100%;
+  height: 23%;
+  line-height: 1.2em;
+  font-size: 15px;
+  text-align: center;
+  border-style: solid;
+  border-color: #000;
+  border-width: 1px;
+  margin-top: 5%;
+  margin-left: 0%;
 }
 
 #calendar2:hover {

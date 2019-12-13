@@ -7,12 +7,14 @@
 {% block extended_head %}
     <link rel="stylesheet" type="text/css" href="{% static 'calendar/css/calendar.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'calendar/css/view_modes.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'calendar/css/eventSettings.css' %}">
 
     <script type="text/javascript" src="{% static 'calendar/js/main.js' %}"></script>
     <script type="text/javascript" src="{% static 'calendar/js/week_view.js' %}"></script>
     <script type="text/javascript" src="{% static 'calendar/js/day_view.js' %}"></script>
     <script type="text/javascript" src="{% static 'calendar/js/month_view.js' %}"></script>
     <script type="text/javascript" src="{% static 'calendar/js/view_manager.js' %}"></script>
+    <script type="text/javascript" src="{% static 'calendar/js/eventSettings.js' %}"></script>
     <script type="text/javascript" src="{% static 'calendar/js/search_field.js' %}"></script>
 {% endblock %}
 
@@ -103,7 +105,7 @@
             {% csrf_token %}
             <!-- left bar -->
             <nav id="sidebar">
-                <button class="btn btn-outline-dark createEventButton">+Create Event</button>
+                <button class="btn btn-outline-dark createEventButton" data-toggle="modal" href="eventSettings.html" data-target="#eventSettingsModal" data-backdrop="static">+Create Event</button>
                 <div id="calendar"></div>
                 <table id="calendar2" class="noselect">
                     <thead>
@@ -142,6 +144,8 @@
     <!-- modal windows appending -->
     {% include 'user_profile.html' %}
     {% include 'settings_modal.html' %}
+    {% include 'eventSettings.html' %}
+
 
     <!-- event creation dialog appending -->
     {% include 'event_creation_dialog.html' %}

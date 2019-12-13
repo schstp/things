@@ -11,4 +11,5 @@ urlpatterns = [
     re_path(r'^get_search_res/$', views.get_search_res, name='get_search_res'),
     path('update_event/', views.update_event, name='update_event'),
     path('save_user_view_settings/', views.save_user_view_settings, name='save_user_view_settings'),
+    path('push_new_event_data/', views.push_new_event_data, name='push_new_event_data'),
 ]

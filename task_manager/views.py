@@ -147,3 +147,21 @@ def get_search_res(request):
     })
 
     return JsonResponse(data)
+
+def push_new_event_data(request):
+    user = request.user
+    start_date = datetime.strptime(request.POST.get('start_date')[5:25], "%b %d %Y %H:%M:%S")
+    end_date = datetime.strptime(request.POST.get('end_date')[5:25], "%b %d %Y %H:%M:%S")
+    title = request.POST.get('title')
+    color = request.POST.get('color')
+    importance = request.POST.get('importance')
+    description = request.POST.get('description')
+    new_event = Event.objects.create(start_date=start_date, end_date=end_date,
+                                     user=user, title=title, color=color, importance=importance, description=description)
+    new_event.save()
+
+    data = {
+        'flag': True,
+        'eventId': new_event.id,
+    }
+    return JsonResponse(data)
