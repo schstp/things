@@ -221,10 +221,6 @@ function setHeaderDateInfo(weekFirstDate, weekLastDate) {
             case 2:
                 dateInfo = MONTHS[weekFirstDate.getMonth()][0] + " " + weekFirstDate.getFullYear();
                 break;
-            case 3:
-                dateInfo = "NOT IMPLEMENTED";
-                console.log('at 3');
-                break;
         }
 
     document.getElementById('dateInfo').innerText = dateInfo;
@@ -272,9 +268,10 @@ function addEventListenersForResizing(eventObj) {
     let currViewBody = document.getElementById('content').childNodes[1];
     let isMousedown = false;
     let eventTimeNote, eventStartPoint, prevY, topPanelHeight, scrollTopPos, scrollTopPos_delta;
+    let isSaved = eventObj.getAttribute('data-event-id') !== "";
     $(stretchBox).on({
         mousedown: function (e) {
-            if (e.target === stretchBox && $('#eventCreationDialog').css('display') === 'none') {
+            if (e.target === stretchBox) {
                 if (e.which === 1) {
                     RESDND = true;
                     isMousedown = true;
@@ -287,8 +284,13 @@ function addEventListenersForResizing(eventObj) {
                     scrollTopPos_delta = 0;
 
                     eventTimeNote = eventObj.getElementsByClassName('event-timenote')[0];
-                    eventObj.classList.toggle('event');
-                    eventObj.classList.toggle('event-modifying');
+
+
+
+                    if (isSaved) {
+                        eventObj.classList.toggle('event');
+                        eventObj.classList.toggle('event-modifying');
+                    }// during event creation the user has decided to replace event
                     currViewBody.classList.toggle('cursor-resize');
 
                 } // interested only in left mouse key down
@@ -340,10 +342,18 @@ function addEventListenersForResizing(eventObj) {
             if (isMousedown) {
                 eventObj.style.height -= 2 + 'px'; // to make margin
                 isMousedown = false;
-                eventObj.classList.toggle('event-modifying');
-                eventObj.classList.toggle('event');
                 currViewBody.classList.toggle('cursor-resize');
-                updateEvent(eventObj);
+                if (isSaved) {
+                    eventObj.classList.toggle('event-modifying');
+                    eventObj.classList.toggle('event');
+
+                    updateEvent(eventObj);
+                }
+                else {
+                    $('#eventCreationDialog').show();
+                    changeEventCreationDialogPosition();
+                    newEvent.classList.toggle('cursor-pointer');
+                }
             } // the mousedown event was generated in free working area
         },
     });
@@ -361,7 +371,7 @@ function addEventListenersForDragAndDrop(eventObj) {
 
     $(eventObj).on({
         mousedown: function (e) {
-            if (e.target !== eventObj.lastChild) {
+            if (e.target !== eventObj.lastChild && e.which === 1) {
 
                 let currViewBody = document.getElementById('content').childNodes[1];
                 let eventStartPoint, eventTimeNote, prevY, topPanelHeight, scrollTopPos, scrollTopPos_delta;
@@ -472,8 +482,30 @@ function createTimestampsForGeneratedEvent(newEvent) {
 function showEventCreationDialog(e) {
     let eventCreationDialog = $('#eventCreationDialog');
     let {startDate, endDate} = createTimestampsForGeneratedEvent(newEvent);
-    document.getElementById('duration').innerText = startDate + " ---- " + endDate;
+    document.getElementById('duration').innerText = startDate.toLocaleDateString('en-CA') + " ---- " + endDate.toLocaleDateString('en-CA');
     newEvent.classList.toggle('cursor-pointer');
+
+    let auxDate = new Date(startDate.getTime());
+    auxDate.setHours(0);
+    auxDate.setMinutes(0);
+    let currDate = auxDate.getDate();
+    for (let i=0; i < 95; i++) {
+        let option = document.createElement('option');
+        option.value = auxDate.toString();
+        option.innerText = (auxDate.getHours() < 10? TIME_EDITS[auxDate.getHours()] : auxDate.getHours()) + ":"
+                            + (auxDate.getMinutes() < 10? TIME_EDITS[auxDate.getMinutes()] : auxDate.getMinutes());
+        document.getElementById('fromSelector').appendChild(option);
+        document.getElementById('toSelector').appendChild(option.cloneNode(true));
+        auxDate.setMinutes(auxDate.getMinutes() + 15);
+    }
+    auxDate.setMinutes(auxDate.getMinutes() + 14);
+    let option = document.createElement('option');
+    option.value = auxDate.toString();
+    option.innerText = "00:00";
+    document.getElementById('fromSelector').appendChild(option);
+    document.getElementById('toSelector').appendChild(option.cloneNode(true));
+
+    $('#eventCreationDialog .date-picker input').val(startDate.toLocaleDateString('en-CA'));
 
     $('#eventCreationDialog .color-picker span').on('click', function (e) {
         $('#eventCreationDialog .color-picker .active-color').removeClass('active-color');
@@ -481,6 +513,54 @@ function showEventCreationDialog(e) {
             newEvent.style.backgroundColor = $(this).css('background-color');
         }
     );
+
+    $('#eventCreationDialog .date-picker input').on('change', function (e) {
+        let chosenDate = this.value;
+        let currentDate = new Date($(newEvent.parentNode).attr('data-date-info')).toLocaleDateString('en-CA');
+
+        if (chosenDate !== currentDate) {
+            if (VIEW_MODE === 1) {
+                let inserted = false;
+                for (let weekDay of $('#weekViewBody .week-view-body-col')) {
+                    if (inserted) break;
+                    if (new Date(weekDay.getAttribute('data-date-info')).toLocaleDateString('en-CA') === chosenDate) {
+                        weekDay.appendChild(newEvent);
+                        inserted = true;
+                    }
+                }
+
+
+                if (!inserted) {
+                    eventCreationDialog.hide();
+                    BASE_DATE.setTime(new Date(chosenDate).getTime());
+                    content.innerHTML = "";
+                    buildWeekView(content, 'weekViewHeader', 'weekViewBody', BASE_DATE);
+
+                    for (let weekDay of $('#weekViewBody .week-view-body-col')) {
+                        if (inserted) break;
+                        if (new Date(weekDay.getAttribute('data-date-info')).toLocaleDateString('en-CA') === chosenDate) {
+                            weekDay.appendChild(newEvent);
+                            inserted = true;
+                        }
+                    }
+                    newEvent.scrollIntoView();
+                    eventCreationDialog.show();
+                }
+            }
+            else if (VIEW_MODE === 0) {
+                eventCreationDialog.hide();
+                BASE_DATE.setTime(new Date(chosenDate).getTime());
+                content.innerHTML = "";
+                buildDayView(content, 'dayViewHeader', 'dayViewBody', BASE_DATE);
+                $('#dayViewBody .day-view-body-col')[0].appendChild(newEvent);
+                newEvent.scrollIntoView();
+                eventCreationDialog.show();
+            }
+
+            changeEventCreationDialogPosition();
+        }
+
+    });
 
     $('#closeBtn').on('click', function () {
         eventCreationDialog.hide();
@@ -542,10 +622,7 @@ function changeEventCreationDialogPosition() {
                 }
                 break;
             case 2:
-
-                break;
-            case 3:
-
+                console.log("NOT IMPLEMENTED");
                 break;
         }
 

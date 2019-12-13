@@ -13,8 +13,18 @@
             <span class="blueberry" data-color="#3852B0"></span>
             <span class="grape" data-color="#9A24A5"></span>
         </div>
+        <div class="date-picker">
+            <input type="date">
+            <div class="time-selectors">
+                <label for="fromSelector">from:</label>
+                <select onmousedown="if(this.options.length>6){this.size=6;}"  onchange='this.size=0;' onblur="this.size=0;"  id="fromSelector">
+                </select>
+                <label for="toSelector">to:</label>
+                <select onmousedown="if(this.options.length>6){this.size=6;}"  onchange='this.size=0;' onblur="this.size=0;" id="toSelector">
+                </select>
+            </div>
+        </div>
         <div id="duration"></div>
         <button id="saveEventBtn" class="btn btn-primary">Save</button>
     </div>
 </div>
-

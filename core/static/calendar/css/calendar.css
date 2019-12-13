@@ -185,6 +185,24 @@ select {
     transition: all 0.3s;
 }
 
+input[type="date"] {
+    outline: none;
+    border: none;
+    border-bottom: solid 2px #0088E0;
+}
+
+input[type="date"]::-webkit-clear-button {
+    display: none;
+}
+
+input[type="date"]::-webkit-inner-spin-button {
+  display: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  font-size: 15px;
+}
+
 #eventCreationDialog .new-event-content {
     display: flex;
     flex-direction: column;
@@ -279,6 +297,38 @@ select {
 .active-color {
     border: solid 1px #2f2f2f;
     box-shadow: 0 4px 8px 0 rgba(0, 136, 224, 0.31), 0 6px 20px 0 rgba(0, 136, 224, 0.3);
+}
+
+.date-picker {
+    display: flex;
+}
+
+.time-selectors {
+    margin-left: 5px;
+}
+
+.time-selectors select {
+    position: absolute;
+    width: 80px;
+}
+
+#fromSelector {
+    right: 90px;
+}
+
+#toSelector {
+    right: 15px;
+    margin: 0;
+}
+
+.time-selectors label[for="fromSelector"] {
+    margin: 0;
+    margin-left: 4px;
+}
+
+.time-selectors label[for="toSelector"] {
+    margin: 0;
+    margin-left: 92px;
 }
 
 #saveEventBtn {

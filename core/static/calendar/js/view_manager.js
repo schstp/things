@@ -19,9 +19,6 @@ function renderCurrentMode(content) {
             buildMonthView(content, 'monthViewHeader', 'monthViewBody', BASE_DATE);
             $("#viewSelector option[value=2]").attr('selected', true);
             break;
-        case 3:
-            $("#viewSelector option[value=3]").attr('selected', true);
-            break;
     }
 }
 
@@ -96,9 +93,6 @@ $(document).ready(function () {
                         renderCurrentMode(content);
                     }
                     break;
-                case 3:
-                    console.log('at 3 | NOT IMPLEMENTED | CLICK ON SIDEBAR CALENDAR');
-                    break;
             }
         }
     });
@@ -115,9 +109,6 @@ $(document).ready(function () {
                 break;
             case 2:
                 BASE_DATE.setMonth(BASE_DATE.getMonth() - 1);
-                break;
-            case 3:
-                console.log('at 3');
                 break;
         }
 
@@ -136,9 +127,6 @@ $(document).ready(function () {
                 break;
             case 2:
                 BASE_DATE.setMonth(BASE_DATE.getMonth() + 1);
-                break;
-            case 3:
-                console.log('at 3');
                 break;
         }
 
