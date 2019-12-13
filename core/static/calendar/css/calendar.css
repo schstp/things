@@ -366,15 +366,51 @@ select {
 .searchPanel{
     display: flex;
     width: 2000px;
-}
-
-.searchBox{
-    display: flex;
-    width: 495px;
+    z-index: 100;
 }
 
 .cancelLabel{
     width: 202px;
     margin-left: 10px;
-    margin-bottom: 0;
+    margin-bottom: auto;
+    margin-top: auto;
+}
+
+.searchBox{
+    position: relative;
+    display: flex;
+    width: 500px;
+}
+
+.searchInput{
+    width: 493px;
+}
+
+.eventBoxes{
+    display: none;
+    flex-direction: column;  
+    position: absolute;
+    top: 40px;
+    list-style-type: none;
+    padding-left: 0px;
+    border-style: solid;
+    border-width: 1.5px;
+    border-color: rgb(68, 170, 233);
+    width: 493px;
+    background-color: white;
+}
+
+.eventBox{
+    position: relative;
+    width: 493px;
+}
+
+.eventBoxLeft{
+    display: inline-flex;
+    width: 328px;
+}
+
+.eventBoxRight{
+    display: inline-flex;
+    justify-self: flex-end;
 }
