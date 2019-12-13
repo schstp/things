@@ -412,3 +412,66 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 ::-webkit-scrollbar{
     width: 4px;
 }
+
+.searchPanel{
+    display: flex;
+    width: auto;
+    z-index: 100;
+}
+
+.cancelLabel{
+    width: 202px;
+    margin-left: 10px;
+    margin-bottom: auto;
+    margin-top: auto;
+}
+
+.searchBox{
+    position: relative;
+    display: flex;
+    width: 490px;
+}
+
+.searchInput{
+    width: inherit;
+}
+
+.eventBoxes{
+    display: none;
+    flex-direction: column;  
+    position: absolute;
+    top: 40px;
+    list-style-type: none;
+    padding-left: 0px;
+    width: inherit;
+    background-color: white;
+}
+
+.eventBox{
+    position: relative;
+    display: flex;
+    width: inherit;
+    border-style: solid;
+    border-width: 1.5px;
+    border-color: rgb(68, 170, 233);
+    border-bottom-style: hidden;
+}
+
+.eventBox:last-child{
+    position: relative;
+    display: flex;
+    width: inherit;
+    border-bottom-style: solid;
+}
+
+.eventBoxLeft{
+    margin-left: 5px;
+    color: black;
+    font-weight: bold;
+}
+
+.eventBoxRight{
+    color: black;
+    margin-left: auto;
+    margin-right: 5px;
+}

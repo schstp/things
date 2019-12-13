@@ -130,3 +130,20 @@ def save_user_view_settings(request):
 
     data = {'flag': True}
     return JsonResponse(data)
+
+def get_search_res(request):
+    user = request.user
+    q = request.GET.get('q')
+    events = Event.objects.filter(user=user, title__icontains=q)
+    data = {'events': []}
+    for event in events:
+        data['events'].append({
+            'title': event.title,
+            'description': event.description,
+            'startDate': event.start_date,
+            'endDate': event.end_date,
+            'importance': event.importance,
+            'color': event.color,
+    })
+
+    return JsonResponse(data)
