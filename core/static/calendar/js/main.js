@@ -796,29 +796,86 @@ $(document).ready(function () {
             //hiding panel
             var hideElem = document.getElementById("hideElem");
             hideElem.style.display = "none";
+            hideElem = document.getElementById("searchButton");
+            hideElem.style.display = "none";
 
             //creating search field
             var searchField = document.getElementById("searchField");
             var searchItem = document.createElement("input");
             searchItem.id = "searchItem";
             searchItem.type = "text";
-            searchItem.placeholder = "Type name of task";
+            searchItem.classList = "searchBox";
 
-            //appending search field
-            searchField.appendChild(searchItem)
+            //creating cancel button
+            var cancelButton = document.createElement("button");
+            cancelButton.id = "cancelButton";
+            cancelButton.className ="transp-button";
+            
+            var cancelIcon = document.createElement("ion-icon");
+            cancelIcon.classList = "icons";
+            cancelIcon.name = "ios-arrow-back";
+            cancelButton.appendChild(cancelIcon);
+
+            //creating cancel label
+            var cancelLabel = document.createElement("label");
+            cancelLabel.innerText = "Hide search bar...";
+            cancelLabel.classList = "cancelLabel";
+
+            //appending elements
+            searchField.appendChild(cancelButton);
+            searchField.appendChild(cancelLabel);
+            searchField.appendChild(searchItem);
+
+            // cancel button click event
+            $('#cancelButton').on('click', function() 
+            {
+                if (searchMode)
+                {
+                    searchMode = false;
+                    //removing search field
+                    var searchField = document.getElementById("searchField");
+                    while (searchField.firstChild)
+                        searchField.removeChild(searchField.firstChild);
+
+                    //showing panel
+                    var hideElem = document.getElementById("hideElem");
+                    hideElem.style.display = "flex";
+                    hideElem = document.getElementById("searchButton");
+                    hideElem.style.display = "flex";
+                }
+            });
+
+            //uploading event list
+            $('#searchItem').keyup(function (e) {
+                //check input
+                var searchStr = document.getElementById("searchItem").value;
+                if (searchStr.length != 0)
+                {
+                    $.ajax({
+                        type: 'GET',
+                        url: 'get_search_res/',
+                        data: {
+                            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                            q: searchStr,
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            for (let eventData of data.events) {
+                                showEvent(eventData.title, eventData.startDate, eventData.endDate);
+                            }
+                            console.log(data);
+                        }
+                    })
+                }
+            });
+
+            //showing uploaded events
+            $(function showEvent(title, startDate, endDate)
+            {
+                var searchField = document.getElementById("searchField");
+                var eventBox = document.createElement("div");
+                //TO-DO
+            });
         }
-        else
-        {
-            searchMode = false;
-            //removing search field
-            var searchField = document.getElementById("searchField");
-            while (searchField.firstChild)
-                searchField.removeChild(searchField.firstChild);
-
-            //showing panel
-            var hideElem = document.getElementById("hideElem");
-            hideElem.style.display = "flex";
-        }
-
     });
 });

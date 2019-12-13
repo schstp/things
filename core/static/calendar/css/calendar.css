@@ -362,3 +362,19 @@ select {
 ::-webkit-scrollbar{
     width: 4px;
 }
+
+.searchPanel{
+    display: flex;
+    width: 2000px;
+}
+
+.searchBox{
+    display: flex;
+    width: 495px;
+}
+
+.cancelLabel{
+    width: 202px;
+    margin-left: 10px;
+    margin-bottom: 0;
+}
