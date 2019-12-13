@@ -906,11 +906,13 @@ $(document).ready(function () {
                 var titleLabel = document.createElement("label");
                 titleLabel.innerText = title;
                 titleLabel.className = "eventBoxLeft";
-
+                
                 //date and time
                 var timeLabel = document.createElement("label");
-                var dateTime = getWeekDay(startDate) + ", " + getTimeString(startDate.getHours()) + ":" + getTimeString(startDate.getMinutes()) + " - " 
-                        + getTimeString(endDate.getHours()) + ":" + getTimeString(endDate.getMinutes());
+                var dateTime = capitalize(window.WEEK_DAYS[startDate.getDay()]) + " " + window.MONTHS[startDate.getMonth()][1] + " " 
+                    + startDate.getDate() + ", " + startDate.getFullYear() + " | " + getTimeString(startDate.getHours()) + ":" 
+                    + getTimeString(startDate.getMinutes()) + " - " + getTimeString(endDate.getHours()) + ":" 
+                    + getTimeString(endDate.getMinutes());
                 timeLabel.innerText = dateTime;
                 timeLabel.className = "eventBoxRight";
 
@@ -926,11 +928,9 @@ $(document).ready(function () {
                 return time < 10 ? TIME_EDITS[time] : time;
             }
 
-            //function return day of week
-            function getWeekDay(date) 
+            function capitalize(str)
             {
-                let days = ['Sun', 'Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat'];
-                return days[date.getDay()];
+                return str[0] + str.substring(1).toLowerCase();
             }
         }
     });
