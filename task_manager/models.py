@@ -15,6 +15,12 @@ class Event(models.Model):
         return self.title + " date: " + str(self.start_date)
 
     class Meta:
-        ordering = ["start_date"]
+        ordering = ['start_date']
 
 
+class Notification(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    date = models.DateTimeField()
+
+    class Meta:
+        ordering = ['date']

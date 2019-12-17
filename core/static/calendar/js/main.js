@@ -669,6 +669,7 @@ function cleanEventCreationDialog() {
     $('#eventCreationDialog .title input').val("");
     $('#eventCreationDialog .color-picker .active-color').removeClass('active-color');
     $('#eventCreationDialog .color-picker .lavender').addClass('active-color');
+    $('#notifications input').prop('checked', false);
 }
 
 
@@ -678,7 +679,16 @@ function saveNewEvent() {
     newEvent.classList.toggle('event-modifying');
 
     let dates = createTimestampsForGeneratedEvent(newEvent);
-
+    let notifications = [];
+    if ($('#notif1').prop('checked')) notifications.push(new Date(dates.startDate.getTime() - 30*60*1000));
+    if ($('#notif2').prop('checked')) notifications.push(new Date(dates.startDate.getTime() - 60*60*1000));
+    if ($('#notif3').prop('checked')) notifications.push(new Date(dates.startDate.getTime() - 180*60*1000));
+    if ($('#notif4').prop('checked')) notifications.push(new Date(dates.startDate.getTime() - 24*60*60*1000));
+    for (let date of notifications) {
+        notifications.push(date.toString());
+        notifications.pop();
+    }
+    console.log(notifications);
     let title = document.querySelector('#eventCreationDialog .title input').value;
     title = title.length !== 0 ? title : "(No title)";
     newEvent.querySelector(".event-title").innerText = title;
@@ -692,6 +702,7 @@ function saveNewEvent() {
             csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
             start_date: JSON.stringify(dates.startDate.toString()),
             end_date: JSON.stringify(dates.endDate.toString()),
+            notifications: JSON.stringify(notifications),
             title: title,
             color: color,
         },
@@ -732,10 +743,7 @@ function updateEvent(eventObj) {
 
 function showEventPreview(e, eventObj) {
     if (!RESDND) {
-        //eventObj.classList.toggle('cursor-grab');
-        //eventObj.classList.toggle('cursor-pointer');
 
-        alert(e.type);
     }
     else {
         RESDND = false;

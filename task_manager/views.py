@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from .models import Event
+from .models import Event, Notification
 from core.models import CustomUser
 
 
@@ -31,6 +31,15 @@ def add_new_event(request):
     new_event = Event.objects.create(start_date=start_date, end_date=end_date,
                                      user=request.user, title=title, color=color)
     new_event.save()
+
+    print(json.loads(request.POST.get('notifications')))
+
+    for notification in json.loads(request.POST.get('notifications')):
+        parsed_date = datetime.strptime(notification[:19], "%Y-%m-%dT%H:%M:%S")
+        parsed_date = parsed_date + timedelta(hours=1)
+        new_notification = Notification.objects.create(event=new_event, date=parsed_date)
+        new_notification.save()
+        print(parsed_date)
 
     data = {
         'flag':True,
@@ -83,7 +92,7 @@ def get_week_events(request):
 def get_month_events(request):
     user = request.user
     data = {}
-    print(request.GET.get('dates'))
+
     for i, dates_list in enumerate(json.loads(request.GET.get('dates'))):
         data.update({i: []})
         for j, date in enumerate(dates_list):
