@@ -1,0 +1,228 @@
+.eventTitle {
+	border: none;
+	outline: none;
+	width: 390px;
+    overflow: hidden;
+    border-bottom: solid 2px #0088E0;
+    font-size: 1.2em;
+}
+
+.fromLabel {
+	margin-top: 10%;
+}
+
+.dateTime {
+	
+	margin-left: 10%;
+	outline: none;
+    border: none;
+    border-bottom: solid 2px #0088E0;
+}
+
+input[type="date"] {
+    outline: none;
+    border: none;
+    border-bottom: solid 2px #0088E0;
+}
+
+input[type="date"]::-webkit-clear-button {
+    display: none;
+}
+
+input[type="date"]::-webkit-inner-spin-button {
+  display: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  font-size: 15px;
+}
+
+.fromInputCol {
+	margin-left: -2%;
+}
+
+.toLabelCol {
+	margin-left: -3%;
+}
+
+.toInputCol {
+	margin-left: -1%;
+}
+
+.toLabel {
+	margin-top: 10%;
+}
+
+.repeatLabelCol {
+	margin-left: -1%;
+}
+
+.repeatLabel {
+	margin-top: 10%;
+}
+
+.selectorCol {
+	margin-left: -3%;
+}
+
+.selector {
+	height: 90%; width: 95%;
+}
+
+.sliderBox {
+	margin-top: 1%;
+}
+
+.slider {
+	width: 60%;
+}
+
+.reminderSettingsContainer {
+	width: 46%;
+	margin-top: 1%;
+	margin-left: 2%;
+}
+
+.remindLabel {
+	margin-left: 1%;
+}
+
+.reminderButton30 {
+	width: 120px;
+	margin-top: 10%;
+	margin-left: 1%;
+}
+
+.reminderButton30.pressed {
+	background-color: #c2c2c2;
+}
+
+.reminderButton1h {
+	width: 120px;
+	margin-top: 10%;
+	margin-left: 1%;
+}
+
+.reminderButton1h.pressed {
+	background-color: #c2c2c2;
+}
+
+.reminderButton3h {
+	width: 120px;
+	margin-top: 10%;
+	margin-left: 1%;
+}
+
+.reminderButton3h.pressed {
+	background-color: #c2c2c2;
+}
+
+.reminderButton1d {
+	width: 120px;
+	margin-top: 10%;
+	margin-left: 1%;
+}
+
+.reminderButton1d.pressed {
+	background-color: #c2c2c2;
+}
+
+.addNotButton {
+	margin-top: 4.4%;
+	width: 200px;
+	height: 30px;
+}
+
+.customNotification {
+	margin-left: 0%;
+	margin-top: 4.4%;
+}
+
+.spinbox {
+	width: 20%;
+	margin-left: 1%;
+}
+
+.selection {
+	width: 40%;
+	margin-left: 2%;
+}
+
+.deleteButton {
+	outline: none;
+	background-color: transparent;
+	border: none;
+	height: 20px;
+	width: 20px;
+	margin-left: -19%;
+}
+
+.commentInput {
+	margin-top: 1%;
+	height: 170px;
+}
+
+.textArea {
+	outline: none;
+	width: 100%;
+	height: 100%;
+}
+
+.colorContainer {
+	width: 51%;
+	height: 10%;
+	margin-top: 3%;
+	margin-left: 2%;
+}
+
+.color-picker-modal {
+    display: flex;
+    max-height: fit-content;
+    margin-top: 7%;
+    margin-left: -40%;
+}
+.color-picker-modal span{
+    display: block;
+    width: 25px;
+    height: 25px;
+    margin-left: 3px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.color-picker-modal span:hover {
+    cursor: pointer;
+}
+
+.color-picker-modal .sage {
+    background-color: #00B67D;
+}
+
+.color-picker-modal .peacock {
+    background-color: #009CE0;
+}
+
+.color-picker-modal .lavender {
+    background-color: #7587C7;
+}
+
+.color-picker-modal .banana {
+    background-color: #FFBE46;
+}
+
+.color-picker-modal .blueberry {
+    background-color: #3852B0;
+}
+
+.color-picker-modal .grape {
+    background-color: #9A24A5;
+}
+
+.color-picker-modal .tangerine {
+    background-color: #FF4D31;
+}
+
+.active-color {
+    border: solid 1px #2f2f2f;
+    box-shadow: 0 4px 8px 0 rgba(0, 136, 224, 0.31), 0 6px 20px 0 rgba(0, 136, 224, 0.3);
+}

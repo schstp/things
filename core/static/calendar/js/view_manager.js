@@ -61,15 +61,16 @@ $(document).ready(function () {
 
     // click on sidebar calendar handler
     $('#calendar2').on('click', function(event) {
-        $('.selected').removeClass('selected');
         let selected = event.target;
-        $(selected).addClass('selected');
-        var selectedDay = selected.innerHTML;
-        if(Number.isInteger(Number(selectedDay)) === true)
+        if(Number.isInteger(Number(selected.innerHTML)) === true && selected.innerHTML !== "")
         {
+            $('.selected').removeClass('selected');
+            $(selected).addClass('selected');
+            var selectedDay = selected.innerHTML;
             let selectedMonth = $('#dateHeader').attr('data-month');
             let selectedYear = $('#dateHeader').attr('data-year');
             let selectedDate = new Date(selectedYear, selectedMonth, selectedDay);
+            SELECTED_DATE = new Date(selectedYear, selectedMonth, selectedDay);
 
             switch (VIEW_MODE) {
                 case 0:

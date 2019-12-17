@@ -78,7 +78,7 @@ $(document).ready(function () {
             $('#searchInput').keyup(function (e) {
                 //check input
                 var searchStr = document.getElementById("searchInput").value;
-                if (searchStr.length !== 0)
+                if (searchStr.length !== 0 && !isEmpty(searchStr))
                 {
                     $.ajax({
                         type: 'GET',
@@ -146,6 +146,13 @@ $(document).ready(function () {
             function capitalize(str)
             {
                 return str[0] + str.substring(1).toLowerCase();
+            }
+
+            function isEmpty(str)
+            {
+                for (var i = 0; i < str.length; i++)
+                    if (str[i] != " ") return false;
+                return true;
             }
         }
     });
