@@ -243,12 +243,12 @@ function createNewEvent({topOffset, height = 0,
     newEvent.appendChild(eventTitle);
     newEvent.appendChild(eventTimenote);
 
-    // TEMP [testing event resizing]
+
     let stretchBox = document.createElement('div');
     stretchBox.classList.add('stretch-box');
     newEvent.appendChild(stretchBox);
-    addEventListenersForResizing(newEvent);
-    // testing end
+
+
 
     newEvent.classList.add('event');
     newEvent.addEventListener('click', handleClickOnEvent);
@@ -257,7 +257,9 @@ function createNewEvent({topOffset, height = 0,
     newEvent.style.top = topOffset + 'px';
     newEvent.style.backgroundColor = color;
 
+    addEventListenersForResizing(newEvent);
     addEventListenersForDragAndDrop(newEvent);
+    addEventListenerForContextMenu(newEvent);
 
     return newEvent;
 }
@@ -265,10 +267,9 @@ function createNewEvent({topOffset, height = 0,
 
 function addEventListenersForResizing(eventObj) {
     let stretchBox = eventObj.getElementsByClassName('stretch-box')[0];
-    let currViewBody = document.getElementById('content').childNodes[1];
     let isMousedown = false;
     let eventTimeNote, eventStartPoint, prevY, topPanelHeight, scrollTopPos, scrollTopPos_delta;
-    let isSaved = eventObj.getAttribute('data-event-id') !== "";
+
     $(stretchBox).on({
         mousedown: function (e) {
             if (e.target === stretchBox) {
@@ -280,12 +281,13 @@ function addEventListenersForResizing(eventObj) {
                     topPanelHeight = e.pageY - parseFloat(eventObj.style.height) - eventStartPoint; // have to consider the offset of working area
 
                     // scrolling offset
+                    var currViewBody = document.getElementById('content').childNodes[1];
                     scrollTopPos = currViewBody.scrollTop;
                     scrollTopPos_delta = 0;
 
                     eventTimeNote = eventObj.getElementsByClassName('event-timenote')[0];
 
-
+                    let isSaved = eventObj.getAttribute('data-event-id') !== "";
 
                     if (isSaved) {
                         eventObj.classList.toggle('event');
@@ -295,10 +297,8 @@ function addEventListenersForResizing(eventObj) {
 
                 } // interested only in left mouse key down
             } // free working area was a target of mousedown event
-        },
-    });
 
-    $(currViewBody).on({
+             $(currViewBody).on({
         mousemove: function (e) {
 
             if (isMousedown) {
@@ -340,9 +340,9 @@ function addEventListenersForResizing(eventObj) {
     $('#content').on({
         mouseup: function (e) {
             if (isMousedown) {
-                eventObj.style.height -= 2 + 'px'; // to make margin
                 isMousedown = false;
                 currViewBody.classList.toggle('cursor-resize');
+                let isSaved = eventObj.getAttribute('data-event-id') !== "";
                 if (isSaved) {
                     eventObj.classList.toggle('event-modifying');
                     eventObj.classList.toggle('event');
@@ -350,11 +350,13 @@ function addEventListenersForResizing(eventObj) {
                     updateEvent(eventObj);
                 }
                 else {
-                    $('#eventCreationDialog').show();
-                    changeEventCreationDialogPosition();
-                    newEvent.classList.toggle('cursor-pointer');
+                    showEventCreationDialog(e);
                 }
             } // the mousedown event was generated in free working area
+        },
+    });
+
+
         },
     });
 }
@@ -459,6 +461,31 @@ function addEventListenersForDragAndDrop(eventObj) {
 }
 
 
+function addEventListenerForContextMenu(eventObj) {
+    eventObj.addEventListener('contextmenu', function (e) {
+        let isSaved = eventObj.getAttribute('data-event-id') !== "";
+        e.preventDefault();
+        if (isSaved) {
+            let contextMenu = document.querySelector('.context-menu');
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+            contextMenu.style.display = 'block';
+        }
+    });
+
+    document.addEventListener('mousedown', function (e) {
+        // hide context menu
+        let contextMenu = $('.context-menu');
+        if (contextMenu.css('display') !== 'none' && !contextMenu.is(e.target)
+            && contextMenu.has(e.target).length === 0) {
+
+            contextMenu.hide();
+        }
+    });
+
+}
+
+
 function createTimestampsForGeneratedEvent(newEvent) {
     let date = newEvent.parentElement.getAttribute('data-date-info');
     let startDate = new Date(date);
@@ -482,28 +509,33 @@ function createTimestampsForGeneratedEvent(newEvent) {
 function showEventCreationDialog(e) {
     let eventCreationDialog = $('#eventCreationDialog');
     let {startDate, endDate} = createTimestampsForGeneratedEvent(newEvent);
-    document.getElementById('duration').innerText = startDate.toLocaleDateString('en-CA') + " ---- " + endDate.toLocaleDateString('en-CA');
+    startDate.toLocaleDateString('en-CA') + " ---- " + endDate.toLocaleDateString('en-CA');
     newEvent.classList.toggle('cursor-pointer');
 
-    let auxDate = new Date(startDate.getTime());
-    auxDate.setHours(0);
-    auxDate.setMinutes(0);
-    let currDate = auxDate.getDate();
-    for (let i=0; i < 95; i++) {
-        let option = document.createElement('option');
-        option.value = auxDate.toString();
-        option.innerText = (auxDate.getHours() < 10? TIME_EDITS[auxDate.getHours()] : auxDate.getHours()) + ":"
-                            + (auxDate.getMinutes() < 10? TIME_EDITS[auxDate.getMinutes()] : auxDate.getMinutes());
-        document.getElementById('fromSelector').appendChild(option);
-        document.getElementById('toSelector').appendChild(option.cloneNode(true));
-        auxDate.setMinutes(auxDate.getMinutes() + 15);
+    // timer pikers preparation
+    let currDate = new Date(startDate.getTime());
+    currDate.setHours(0);
+    currDate.setMinutes(0);
+    let startTimeOptions = $('#eventCreationDialog .time-selectors #fromSelector option');
+    let endTimeOptions = $('#eventCreationDialog .time-selectors #toSelector option');
+    let startSelectedIndex = 96, endSelectedIndex = 96;
+
+    for (var i=0; i < 96; i++) {
+        startTimeOptions[i].value = currDate.toString();
+        endTimeOptions[i].value = currDate.toString();
+
+        if (currDate.getTime() === startDate.getTime()) startSelectedIndex = i;
+        if (currDate.getTime() === endDate.getTime()) endSelectedIndex = i;
+        currDate.setMinutes(currDate.getMinutes() + 15);
     }
-    auxDate.setMinutes(auxDate.getMinutes() + 14);
-    let option = document.createElement('option');
-    option.value = auxDate.toString();
-    option.innerText = "00:00";
-    document.getElementById('fromSelector').appendChild(option);
-    document.getElementById('toSelector').appendChild(option.cloneNode(true));
+
+    currDate.setMinutes(currDate.getMinutes() - 1);
+    startTimeOptions[i].value = currDate.toString();
+    endTimeOptions[i].value = currDate.toString();
+    $('#fromSelector')[0].selectedIndex = startSelectedIndex;
+    $('#toSelector')[0].selectedIndex = endSelectedIndex;
+
+    // event handlers
 
     $('#eventCreationDialog .date-picker input').val(startDate.toLocaleDateString('en-CA'));
 
@@ -568,6 +600,7 @@ function showEventCreationDialog(e) {
         cleanEventCreationDialog();
         newEvent.remove();
     });
+
 
     eventCreationDialog.show();
 
@@ -797,9 +830,10 @@ function handleClickOnEvent(e) {
 }
 
 function handleDblClickOnEvent(e) {
+    let eventObj = this;
     clearTimeout(clickTimer);
     preventClick = true;
-    showEventEditor(e);
+    showEventEditor(e, eventObj);
 }
 
 
@@ -845,15 +879,23 @@ $(document).ready(function () {
     // event creation dialog is closed if the user clicks out it
     $(document).on({
         mousedown: function (e) {
-            var eventCreationDialog = $('#eventCreationDialog');
+            if (e.which === 1) {
+                var eventCreationDialog = $('#eventCreationDialog');
 
-            if (eventCreationDialog.css('display') !== 'none' && !eventCreationDialog.is(e.target)
-                && eventCreationDialog.has(e.target).length === 0) {
-                eventCreationDialog.hide();
-                eventCreationDialog.css({'top': innerHeight / 2, 'left': innerWidth / 2});
-                newEvent.classList.toggle('cursor-pointer');
-                if (!$(newEvent).is(e.target) && $(newEvent).has(e.target).length === 0) newEvent.remove();
-            }},
+                if (eventCreationDialog.css('display') !== 'none' && !eventCreationDialog.is(e.target)
+                    && eventCreationDialog.has(e.target).length === 0) {
+                    eventCreationDialog.hide();
+                    eventCreationDialog.css({'top': innerHeight / 2, 'left': innerWidth / 2});
+                    newEvent.classList.toggle('cursor-pointer');
+
+                    // remove event and clean event creation dialog if eventObj is also misclicked
+                    if (!$(newEvent).is(e.target) && $(newEvent).has(e.target).length === 0) {
+                        newEvent.remove();
+                        cleanEventCreationDialog();
+                    }
+                }
+            }
+            },
     });
 
     // event creation dialog is replaced if the browser window is resized

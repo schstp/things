@@ -24,7 +24,72 @@
                 </select>
             </div>
         </div>
-        <div id="duration"></div>
-        <button id="saveEventBtn" class="btn btn-primary">Save</button>
+        <div id="notifications">
+            <span>Remind me before: </span><br>
+            <input id="notif1" type="checkbox" value="1"> 30 minutes<br>
+            <input id="notif2" type="checkbox" value="1"> 1 hour<br>
+            <input id="notif3" type="checkbox" value="1"> 3 hours<br>
+            <input id="notif4" type="checkbox" value="1"> 1 day<br>
+        </div>
+        <div id="eventCreationDialogButtonBox">
+            <button id="moreSettings" class="btn btn-outline-secondary">More</button>
+            <button id="saveEventBtn" class="btn btn-primary">Save</button>
+        </div>
     </div>
 </div>
+
+<script>
+
+    // timer pikers preparations
+    let auxDate = new Date();
+    auxDate.setHours(0);
+    auxDate.setMinutes(0);
+
+    for (let i=0; i < 96; i++) {
+        let option = document.createElement('option');
+        option.innerText = (auxDate.getHours() < 10? TIME_EDITS[auxDate.getHours()] : auxDate.getHours()) + ":"
+                            + (auxDate.getMinutes() < 10? TIME_EDITS[auxDate.getMinutes()] : auxDate.getMinutes());
+        document.getElementById('fromSelector').appendChild(option);
+        document.getElementById('toSelector').appendChild(option.cloneNode(true));
+        auxDate.setMinutes(auxDate.getMinutes() + 15);
+    }
+
+    let option = document.createElement('option');
+    option.innerText = "00:00";
+    document.getElementById('fromSelector').appendChild(option);
+    document.getElementById('toSelector').appendChild(option.cloneNode(true));
+
+
+    $('#fromSelector, #toSelector').on({
+        change: function (e) {
+            let startTime = $('#fromSelector')[0];
+            startTime = startTime.options[startTime.selectedIndex].value;
+            startTime = new Date(startTime);
+
+            let endTime = $('#toSelector')[0];
+            endTime = endTime.options[endTime.selectedIndex].value;
+            endTime = new Date(endTime);
+
+            if (startTime.getTime() > endTime.getTime()) {
+                $('#eventCreationDialog .time-selectors select').css('border-color', 'red');
+                alert('start time cannot be greater than end time!');
+            } else if ((endTime.getTime() - startTime.getTime()) / 1000 / 60 < 45) {
+                alert('event duration cannot be less than 45 minutes');
+                $('#eventCreationDialog .time-selectors select').css('border-color', 'red');
+            } else {
+                $('#eventCreationDialog .time-selectors select').css('border-color', '#a9a9a9');
+                let {topOffset, height} = converTimeToPosition(startTime, endTime);
+                newEvent.getElementsByClassName('event-timenote')[0];
+                newEvent.style.top = topOffset + 'px';
+                newEvent.style.height = (height % 15 !== 0 ? height + 1 : height) + 'px';
+                newEvent.getElementsByClassName('event-timenote')[0].innerText = getTimeNote(newEvent);
+
+            }
+        },
+
+        mousedown: function (e) {
+            this.options[this.selectedIndex].scrollIntoView();
+        }
+    });
+
+</script>

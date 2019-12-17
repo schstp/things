@@ -178,7 +178,7 @@ select {
     z-index: 25;
     position: absolute;
     width: 450px;
-    height: 300px;
+    height: 355px;
     background-color: #ffffff;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 7px;
@@ -207,7 +207,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: flex;
     flex-direction: column;
     width: 400px;
-    height: 250px;
+    height: 100%;
     margin-top: 2%;
     margin-left: 10%;
 }
@@ -331,8 +331,58 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-left: 92px;
 }
 
-#saveEventBtn {
+#notifications {
+    margin-top: 10px;
+}
+
+#notifications span {
+    color: black;
+}
+
+#eventCreationDialogButtonBox {
+    display: flex;
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+}
+
+#saveEventBtn, #moreSettings {
     width: 100px;
+}
+
+#moreSettings {
+    margin-left: auto;
+}
+
+#saveEventBtn {
+    margin-left: 10px;
+}
+
+.context-menu {
+    position: absolute;
+    display: none;
+    z-index: 25;
+    width: 120px;
+    background-color: #ffffff;
+    border-radius: 5%;
+    box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
+}
+
+.menu-options {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.menu-option {
+    font-weight: 500;
+    font-size: 14px;
+    padding: 10px 40px 10px 20px;
+    cursor: pointer;
+    color: #6e6e6e;
+}
+
+.menu-option:hover {
+    background: #e3e3e3;
 }
 
 #calendar2 {

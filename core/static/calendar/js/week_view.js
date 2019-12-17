@@ -134,7 +134,10 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
 
     $('.week-view-body-col').on({
         mousedown: function (e) {
-            if (e.target.className === 'week-view-body-col' && $('#eventCreationDialog').css('display') === 'none') {
+            if (e.target.className === 'week-view-body-col'
+                && $('#eventCreationDialog').css('display') === 'none'
+                && $('.context-menu').css('display') === 'none') {
+
                 if (e.which === 1) {
 
                     isMousedown = true;
@@ -170,8 +173,6 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
                     eventTimeNote.innerText = getTimeNote(newEvent);
 
                 } // user just clicked on the area, no duration was stated
-
-                newEvent.style.height -= 2 + 'px'; // to make margin
 
                 isMousedown = false;
 
@@ -235,8 +236,6 @@ function buildWeekView (parentElement, weekViewHeaderID, weekViewBodyID, baseDat
                     eventTimeNote.innerText = getTimeNote(newEvent);
 
                 } // user just clicked on the area, no duration was stated
-
-                newEvent.style.height -= 2 + 'px'; // to make margin
 
                 isMousedown = false;
 
