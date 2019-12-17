@@ -5,27 +5,20 @@ $(document).ready(function() {
         var reminder3hOutput;
         var reminder1dOutput;
         var customReminders = [];
-        var sliderOutput = '2';
+        window.sliderOutput = '2';
         window.fromDate = new Date();
         window.toDate = new Date();
-        var repeatOutput;
-        var colorOutput;
-        var textAreaOutput;
-        var eventTitle;
+        var colorOutput = '#7587C7';
+        var textAreaOutput = "";
+        var eventTitle = "(no title)";
 
         $('.createEventButton').on('click', function(event) {
+          //resetToDefaultState();
           let today = new Date();
-          var tzoffset = (new Date()).getTimezoneOffset() * 60000;
-          var localDate = (new Date(today - tzoffset));
-          localDate.setSeconds(0);
-          localDate.setMilliseconds(0)
-          localDate.setMinutes(0);
-          localDate.setHours(0);
-          var localISOTime = localDate.toISOString().slice(0, -1);
           var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
           $('#dateTimeFrom').attr('value', date);
         });
-        
+
         let button30 = document.getElementById('reminderButton30');
         let button1h = document.getElementById('reminderButton1h');
         let button3h = document.getElementById('reminderButton3h');
@@ -135,7 +128,7 @@ $(document).ready(function() {
             if (customNotificationCounter === 3)
             {  
               nextIdIndex = $(this).attr('id');            
-              notificationButton = document.createElement('button');
+              let notificationButton = document.createElement('button');
               $(notificationButton).attr('class', 'addNotButton');
               $(notificationButton).attr('id', 'addNotButton');
               $(notificationButton).text('Add notification');
@@ -149,19 +142,38 @@ $(document).ready(function() {
           sliderOutput = this.value
         });
 
-        $('.color-picker span').on('click', function (e) {
-            $('.color-picker .active-color').removeClass('active-color');
+        $('.color-picker-modal span').on('click', function (e) {
+            $('.color-picker-modal .active-color').removeClass('active-color');
             this.classList.add('active-color');
           }
         );
 
-        $('#saveChangesButton').on('click', function(e) {
-          if ($('#dateTimeFrom').attr('value') > $('#dateTimeTo').attr('value'))
-          {
-            alert('Final date cannot be more than Starting')
-          }
-          else 
-          {
+        $('.close').on('click', function() {
+          resetToDefaultState();
+          $('#deleteEventButton').remove();
+        }); 
+
+        function resetToDefaultState() 
+        {
+          var sliderOutput = '2';
+          window.fromDate = new Date();
+          window.toDate = new Date();
+          var colorOutput = '#7587C7';
+          var textAreaOutput = "";
+          var eventTitle = "(no title)";
+          let today = new Date();
+          var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+          $('#dateTimeFrom').attr('value', date);
+
+          $("input[name='eventTitle']").val("");
+          $('.textArea').val("");
+          $('#timeFrom option:first').prop('selected', true);
+          $('#timeTo option:first').prop('selected', true);
+          var customNotificationCounter = 0;
+          var nextIdIndex = 0;          
+        }
+
+        $('#saveChangesButton').on('click', function(e) {         
             var i = 0;
             $('.customNotification').each(function() {
               customReminders[i] = $(this).children('.spinbox').val() + ' ' + $(this).children('.selection').val();
@@ -169,51 +181,78 @@ $(document).ready(function() {
               i++;
             });
 
-            fromDate = new Date($('#dateTimeFrom').val() + 'T' + $('#timeFrom').val());
-            toDate = new Date($('#dateTimeFrom').val()  + 'T' + $('#timeTo').val());
             textAreaOutput = $('.textArea').val();
             colorOutput = $('.active-color').attr('data-color');
-            eventTitle = $("input[name='eventTitle']").val();
-            /*console.log('Event Title: ' + eventTitle);
-            console.log('Starting date: ' + fromDate);
-            console.log('Final date: ' + toDate);/*
-            console.log('Importance: ' + sliderOutput);
-            console.log('Comment: ' + textAreaOutput);
-            console.log('Color: ' + colorOutput);
-            if (reminder30Output)
-              console.log(reminder30Output);
-            if (reminder1hOutput)
-              console.log(reminder1hOutput);
-            if (reminder3hOutput)
-              console.log(reminder3hOutput);
-            if (reminderButton1d)
-              console.log(reminder1dOutput);
-            for (var j = 0; j < customReminders.length; j++)
+            fromDate = new Date($('#dateTimeFrom').val() + 'T' + $('#timeFrom').val());
+            toDate = new Date($('#dateTimeFrom').val()  + 'T' + $('#timeTo').val());
+            
+            if (fromDate > toDate) 
             {
-              if (customReminders[j]);
-                console.log('remind before: ' + customReminders[j]);
-            }*/
-
-            $.ajax({
-              type: 'POST',
-              url: 'push_new_event_data/',
-              data: {
-                csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
-                title: eventTitle,
-                start_date: JSON.stringify(fromDate.toString()),
-                end_date: JSON.stringify(toDate.toString()),
-                color: colorOutput,
-                importance: sliderOutput,
-                description: textAreaOutput,
-              },
-              dataType: 'json',
-              success: function (data) {
-                if (data.flag) {
-                console.log('SUCCESS! [changes have been saved]');
-                }
+                alert('Startig date cannot be larger than Ending');
             }
+            else
+            {
+               if ($("input[name='eventTitle']").val() !== "") 
+            {
+                eventTitle = $("input[name='eventTitle']").val();
+            }
+
+            if (byDoubleClickCalled) 
+            {
+              byDoubleClickCalled = false;
+              //console.log('called by double click');
+              $.ajax({
+                type: 'POST',
+                url: 'update_double_clicked_event/',
+                data: {
+                  csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                  event_id: ID_OF_DOUBLE_CLICKED_EVENT,
+                  title: eventTitle,
+                  start_date: JSON.stringify(fromDate.toString()),
+                  end_date: JSON.stringify(toDate.toString()),
+                  color: colorOutput,
+                  importance: sliderOutput,
+                  description: textAreaOutput,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  if (data.flag) {
+                  console.log('SUCCESS! [changes have been saved]');
+                  }
+                }
+              });
+            }            
+            else 
+            {
+              $.ajax({
+                type: 'POST',
+                url: 'push_new_event_data/',
+                data: {
+                  csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                  title: eventTitle,
+                  start_date: JSON.stringify(fromDate.toString()),
+                  end_date: JSON.stringify(toDate.toString()),
+                  color: colorOutput,
+                  importance: sliderOutput,
+                  description: textAreaOutput,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  if (data.flag) {
+                  console.log('SUCCESS! [changes have been saved]');
+                  }
+                }
             });
-          }
+            }
+            }
+
+            $('#deleteEventButton').remove();
+            resetToDefaultState();
+
+            BASE_DATE.setTime(fromDate.getTime());
+            let content = document.getElementById('content');
+            console.log(content);
+            renderCurrentMode(content);
 
         });
 })

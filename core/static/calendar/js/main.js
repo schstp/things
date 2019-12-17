@@ -25,6 +25,15 @@ window.BASE_DATE = new Date();
 window.CURRENT_DATE = new Date();
 window.SELECTED_DATE = new Date();
 
+window.RECEIVED_TITLE = "";
+window.RECEIVED_COLOR = "";
+window.RECEIVED_IMPORTANCE = -1;
+window.RECEIVED_DESCRIPTION = "";
+window.RECEIVED_START_DATE = new Date();
+window.RECEIVED_END_DATE = new Date();
+window.ID_OF_DOUBLE_CLICKED_EVENT = -1;
+window.byDoubleClickCalled = false;
+
 window.clickTimer = 0;
 window.clickDelay = 200;
 window.preventClick = false;
@@ -708,10 +717,133 @@ function showEventPreview(e, eventObj) {
     }
 }
 
-function showEventEditor(e) {
-    alert(e.type);
+function showEventEditor(e, eventObj) {
+        let idOfDoubleClickedEvent = $(eventObj).attr('data-event-id');
+        $.ajax ({
+            type: 'GET',
+            url: 'get_id_by_doubleclick/',
+            data: {
+                event_id: idOfDoubleClickedEvent,
+            },
+            dataType: 'json',
+            success: function (data) {
+            if (data.flag) {
+            console.log('data has been received');
+            //console.log(data.start_date);
+            RECEIVED_TITLE = data.title;
+            RECEIVED_DESCRIPTION = data.description;
+            RECEIVED_IMPORTANCE = data.importance;
+            RECEIVED_COLOR = data.color;
+            RECEIVED_END_DATE = new Date(data.end_date);
+            RECEIVED_START_DATE = new Date(data.start_date);
+            ID_OF_DOUBLE_CLICKED_EVENT = idOfDoubleClickedEvent;
+            byDoubleClickCalled = true;
+            //console.log(byDoubleClickCalled);
+            
+            $("#eventSettingsModal").modal('show');
+            $("input[name='eventTitle']").val(RECEIVED_TITLE);
+            $('.textArea').val(RECEIVED_DESCRIPTION);
+            $('.slider').attr('value', RECEIVED_IMPORTANCE);
+            sliderOutput = RECEIVED_IMPORTANCE;
+
+            $('.active-color-modal').removeClass('active-color');
+            $('.color-picker-modal span').each(function() {
+                
+                if ($(this).attr('data-color') === RECEIVED_COLOR)
+                {                  
+                    $(this).addClass('active-color');
+                }
+            });
+
+            var date = RECEIVED_START_DATE.getFullYear() + '-' + (RECEIVED_START_DATE.getMonth() + 1) + '-' + RECEIVED_START_DATE.getDate();
+
+            $('#dateTimeFrom').attr('value', date);
+
+            var timeFrom;
+            if (RECEIVED_START_DATE.getHours() < 10 && RECEIVED_START_DATE.getMinutes() < 10)
+            {
+               timeFrom = '0' + RECEIVED_START_DATE.getHours() + ':' + RECEIVED_START_DATE.getMinutes() + '0';
+            }
+            else if (RECEIVED_START_DATE.getMinutes() < 10)
+            {
+               timeFrom = RECEIVED_START_DATE.getHours() + ':' + RECEIVED_START_DATE.getMinutes() + '0';
+            }
+            else if (RECEIVED_START_DATE.getHours() < 10) 
+            {
+                timeFrom = '0' + RECEIVED_START_DATE.getHours() + ':' + RECEIVED_START_DATE.getMinutes();
+            }
+            else 
+            {
+                timeFrom = RECEIVED_START_DATE.getHours() + ':' + RECEIVED_START_DATE.getMinutes();               
+            }
+            $('#timeFrom option').each(function() {
+                if ($(this).text() === timeFrom)
+                {
+                    $(this).prop('selected', true);
+                }
+            });
+
+            var timeTo;
+            if (RECEIVED_END_DATE.getHours() < 10 && RECEIVED_END_DATE.getMinutes() < 10)
+            {
+               timeTo = '0' + RECEIVED_END_DATE.getHours() + ':' + RECEIVED_END_DATE.getMinutes() + '0';
+            }
+            else if (RECEIVED_END_DATE.getHours() < 10)
+            {
+                timeTo = '0' + RECEIVED_END_DATE.getHours() + ':' + RECEIVED_END_DATE.getMinutes();
+            }
+            else if (RECEIVED_END_DATE.getMinutes() < 10) 
+            {
+                timeTo = RECEIVED_END_DATE.getHours() + ':' + RECEIVED_END_DATE.getMinutes() + '0';
+            }
+            else 
+            {
+                timeTo = RECEIVED_END_DATE.getHours() + ':' + RECEIVED_END_DATE.getMinutes();
+            }
+            $('#timeTo option').each(function() {
+                if ($(this).text() === timeTo)
+                {
+                    $(this).prop('selected', true);
+                }
+            });
+            let deleteEventButton = document.createElement('button');
+            $(deleteEventButton).addClass('btn');
+            $(deleteEventButton).addClass('btn-danger');
+            $(deleteEventButton).attr('data-dismiss', 'modal');
+            $(deleteEventButton).attr('id', 'deleteEventButton');
+            $(deleteEventButton).text('Delete event');
+            deleteEventButton.addEventListener('click', onDeleteEventClicked);
+
+            $('#eventSettingsFooter').prepend(deleteEventButton);
+
+            }
+        }
+        });
+    
+    
 }
 
+function onDeleteEventClicked(event) 
+{
+    $.ajax({
+         type: 'GET',
+            url: 'delete_event/',
+            data: {
+                event_id: ID_OF_DOUBLE_CLICKED_EVENT,
+            },
+            dataType: 'json',
+            success: function (data) {
+            if (data.flag) {
+            console.log('event has been succesfully deleted');
+            }
+    }
+    });
+    //$(event.target.parentElement.parentElement).close();
+    $(event.target).hide();
+    BASE_DATE.setTime(RECEIVED_START_DATE.getTime());
+    let content = document.getElementById('content');
+    renderCurrentMode(content);
+}
 
 function buildCalendar(id, year, month) {
     var Dlast = new Date(year,month+1,0).getDate(),
@@ -800,9 +932,10 @@ function handleClickOnEvent(e) {
 }
 
 function handleDblClickOnEvent(e) {
+    let eventObj = this;
     clearTimeout(clickTimer);
     preventClick = true;
-    showEventEditor(e);
+    showEventEditor(e, eventObj);
 }
 
 

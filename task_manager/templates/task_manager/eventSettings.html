@@ -3,7 +3,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <!--<h5 class="modal-title" id="exampleModalLongTitle">Event title</h5>-->
-        <input class="modal-title eventTitle" name="eventTitle" type="text" placeholder="Event Title">
+        <input class="modal-title eventTitle" name="eventTitle" type="text" placeholder="Event Title" id="#eventTitle">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>        
@@ -243,7 +243,7 @@
           </div>
           <div class="row colorContainer">
             <div>Choose event color</div>
-            <div class="color-picker">
+            <div class="color-picker-modal">
               <span class="lavender active-color" data-color="#7587C7"></span>
               <span class="sage" data-color="#00B67D"></span>
               <span class="tangerine" data-color="#FF4D31"></span>
@@ -259,7 +259,7 @@
           <textarea class="textArea"></textarea>
           </div>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" id="eventSettingsFooter">
         <button type="button" class="btn btn-primary" id="saveChangesButton" data-dismiss="modal">Save Changes</button>
       </div>
     </div>

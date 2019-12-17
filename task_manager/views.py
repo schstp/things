@@ -165,3 +165,51 @@ def push_new_event_data(request):
         'eventId': new_event.id,
     }
     return JsonResponse(data)
+
+def get_id_by_doubleclick(request):
+    user = request.user
+    event_id = int(request.GET.get('event_id'))
+    requested_event = Event.objects.get(user=user, pk=event_id)
+    data = {
+        'title': requested_event.title,
+        'start_date': requested_event.start_date,
+        'end_date': requested_event.end_date,
+        'color': requested_event.color,
+        'description': requested_event.description,
+        'importance': requested_event.importance,
+        'flag': True,
+    }
+    return  JsonResponse(data)
+def update_double_clicked_event(request):
+    user = request.user
+    event_id = int(request.POST.get('event_id'))
+    start_date = datetime.strptime(request.POST.get('start_date')[5:25], "%b %d %Y %H:%M:%S")
+    end_date = datetime.strptime(request.POST.get('end_date')[5:25], "%b %d %Y %H:%M:%S")
+    title = request.POST.get('title')
+    color = request.POST.get('color')
+    importance = request.POST.get('importance')
+    description = request.POST.get('description')
+    updated_event = Event.objects.get(user=user, pk=event_id)
+    updated_event.title = title
+    updated_event.start_date = start_date
+    updated_event.end_date = end_date
+    updated_event.color = color
+    updated_event.importance = importance
+    updated_event.description = description
+    updated_event.save()
+
+    data = {
+        'flag': True,
+        'eventId': updated_event.id,
+    }
+    return JsonResponse(data)
+
+def delete_event(request):
+    user = request.user
+    event_id = int(request.GET.get('event_id'))
+    requested_event = Event.objects.get(user=user, pk=event_id)
+    requested_event.delete()
+    data = {
+        'flag': True,
+    }
+    return JsonResponse(data)
