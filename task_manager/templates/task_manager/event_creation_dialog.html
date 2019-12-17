@@ -92,4 +92,15 @@
         }
     });
 
+    $('#closeBtn').on('click', function () {
+        let eventCreationDialog = $('#eventCreationDialog');
+        let confirmed = confirm('Discard unsaved changes?');
+        if (confirmed) {
+            eventCreationDialog.hide();
+            eventCreationDialog.css({'top': innerHeight / 2, 'left': innerWidth / 2});
+            cleanEventCreationDialog();
+            newEvent.remove();
+        }
+    });
+
 </script>

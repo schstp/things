@@ -604,14 +604,6 @@ function showEventCreationDialog(e) {
 
     });
 
-    $('#closeBtn').on('click', function () {
-        eventCreationDialog.hide();
-        eventCreationDialog.css({'top': innerHeight / 2, 'left': innerWidth / 2});
-        cleanEventCreationDialog();
-        newEvent.remove();
-    });
-
-
     eventCreationDialog.show();
 
     changeEventCreationDialogPosition();
@@ -1061,8 +1053,15 @@ $(document).ready(function () {
 
                     // remove event and clean event creation dialog if eventObj is also misclicked
                     if (!$(newEvent).is(e.target) && $(newEvent).has(e.target).length === 0) {
-                        newEvent.remove();
-                        cleanEventCreationDialog();
+                        let confirmed = confirm('Discard unsaved changes?');
+                        if (confirmed) {
+                            newEvent.remove();
+                            cleanEventCreationDialog();
+                        }
+                        else {
+                            eventCreationDialog.show();
+                            newEvent.classList.toggle('cursor-pointer');
+                        }
                     }
                 }
             }
