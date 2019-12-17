@@ -4,3 +4,31 @@
     <li id="editOption" class="menu-option"><ion-icon name="create"></ion-icon>Edit</li>
   </ul>
 </div>
+
+<script type="text/javascript">
+    $('#deleteOption').on('click', function deleteEvent(e) {
+        let contextMenu = $('.context-menu');
+        contextMenu.hide();
+        let eventObj = contextMenu[0].eventObj;
+        let confirmed = confirm('Are you sure you want to delete the event?');
+        if (confirmed) {
+
+            $.ajax({
+                type: 'GET',
+                url: 'delete_event/',
+                data: {
+                    event_id: eventObj.getAttribute('data-event-id'),
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.flag) {
+                        console.log('event has been succesfully deleted');
+                    }
+                }
+            });
+            eventObj.remove();
+            document.getElementById('deleteOption').removeEventListener('click', deleteEvent)
+        }
+    });
+
+</script>

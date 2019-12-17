@@ -131,6 +131,7 @@ def save_user_view_settings(request):
     data = {'flag': True}
     return JsonResponse(data)
 
+
 def get_search_res(request):
     user = request.user
     q = request.GET.get('q')
@@ -147,6 +148,7 @@ def get_search_res(request):
     })
 
     return JsonResponse(data)
+
 
 def push_new_event_data(request):
     user = request.user
@@ -166,6 +168,7 @@ def push_new_event_data(request):
     }
     return JsonResponse(data)
 
+
 def get_id_by_doubleclick(request):
     user = request.user
     event_id = int(request.GET.get('event_id'))
@@ -180,6 +183,8 @@ def get_id_by_doubleclick(request):
         'flag': True,
     }
     return  JsonResponse(data)
+
+
 def update_double_clicked_event(request):
     user = request.user
     event_id = int(request.POST.get('event_id'))
@@ -203,6 +208,7 @@ def update_double_clicked_event(request):
         'eventId': updated_event.id,
     }
     return JsonResponse(data)
+
 
 def delete_event(request):
     user = request.user

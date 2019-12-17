@@ -179,7 +179,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: flex;
     max-height: fit-content;
     margin-top: 7%;
-    margin-left: -40%;
+    margin-left: -35%;
 }
 .color-picker-modal span{
     display: block;

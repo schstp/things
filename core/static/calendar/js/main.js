@@ -479,6 +479,7 @@ function addEventListenerForContextMenu(eventObj) {
             let contextMenu = document.querySelector('.context-menu');
             contextMenu.style.left = e.pageX + 'px';
             contextMenu.style.top = e.pageY + 'px';
+            contextMenu.eventObj = eventObj;
             contextMenu.style.display = 'block';
         }
     });
@@ -492,7 +493,6 @@ function addEventListenerForContextMenu(eventObj) {
             contextMenu.hide();
         }
     });
-
 }
 
 
