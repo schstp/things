@@ -41,6 +41,8 @@ def add_new_event(request):
         new_notification.save()
         print(parsed_date)
 
+
+
     data = {
         'flag':True,
         'eventId': new_event.id,

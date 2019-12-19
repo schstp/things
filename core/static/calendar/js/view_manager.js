@@ -83,14 +83,14 @@ $(document).ready(function () {
                     }
                     break;
                 case 1:
-                    BASE_DATE.setTime(selectedDate.getTime());
                     if (getWeekNumber(BASE_DATE) !== getWeekNumber(selectedDate)) {
+                        BASE_DATE.setTime(selectedDate.getTime());
                         renderCurrentMode(content);
                     }
                     break;
                 case 2:
-                    BASE_DATE.setTime(selectedDate.getTime());
                     if (BASE_DATE.getMonth() !== selectedDate.getMonth()) {
+                        BASE_DATE.setTime(selectedDate.getTime());
                         renderCurrentMode(content);
                     }
                     break;
