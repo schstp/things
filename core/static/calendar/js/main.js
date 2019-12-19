@@ -671,6 +671,7 @@ function cleanEventCreationDialog() {
     $('#eventCreationDialog .color-picker .active-color').removeClass('active-color');
     $('#eventCreationDialog .color-picker .lavender').addClass('active-color');
     $('#notifications input').prop('checked', false);
+    $('#eventCreationDialog .time-selectors select').css('border-color', '#a9a9a9');
 }
 
 
