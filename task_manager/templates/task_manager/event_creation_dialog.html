@@ -2,7 +2,7 @@
     <div class="new-event-content">
         <span id="closeBtn" title="Close"><ion-icon style="font-size: 1.5em" name="close"></ion-icon></span>
         <div class="title">
-            <input type="text" placeholder="Add title" autofocus>
+            <input type="text" name='creationDialogTitle' placeholder="Add title" autofocus>
         </div>
         <div class="color-picker">
             <span class="lavender active-color" data-color="#7587C7"></span>
@@ -102,5 +102,104 @@
             newEvent.remove();
         }
     });
+
+    $('#moreSettings').on('click', function(e) {       
+        let eventCreationDialog = $('#eventCreationDialog');
+        let color = $('.active-color').attr('data-color');
+        console.log($('.active-color'));
+        eventCreationDialog.hide();
+        newEvent.remove();
+        $("#eventSettingsModal").modal('show');
+        $("input[name='eventTitle']").val($("input[name='creationDialogTitle']").val());
+
+        if ($('#notif1').prop('checked')) 
+        {
+            $('#reminderButton30').addClass('pressed');
+        }
+        if ($('#notif2').prop('checked')) 
+        {
+            $('#reminderButton1h').addClass('pressed');
+        }
+        if ($('#notif3').prop('checked')) 
+        {
+            $('#reminderButton3h').addClass('pressed');
+        }
+        if ($('#notif4').prop('checked')) 
+        {
+            $('#reminderButton1d').addClass('pressed');
+        }
+
+        let startTime = $('#fromSelector')[0];
+        startTime = startTime.options[startTime.selectedIndex].value;
+        startTime = new Date(startTime);
+
+        let endTime = $('#toSelector')[0];
+        endTime = endTime.options[endTime.selectedIndex].value;
+        endTime = new Date(endTime);
+
+        var date = startTime.getFullYear() + '-' + (startTime.getMonth() + 1) + '-' + startTime.getDate();
+        $('#dateTimeFrom').attr('value', date)
+
+        var timeFrom;
+            if (startTime.getHours() < 10 && startTime.getMinutes() < 10)
+            {
+               timeFrom = '0' + startTime.getHours() + ':' + startTime.getMinutes() + '0';
+            }
+            else if (startTime.getMinutes() < 10)
+            {
+               timeFrom = startTime.getHours() + ':' + startTime.getMinutes() + '0';
+            }
+            else if (startTime.getHours() < 10) 
+            {
+                timeFrom = '0' + startTime.getHours() + ':' + startTime.getMinutes();
+            }
+            else 
+            {
+                timeFrom = startTime.getHours() + ':' + startTime.getMinutes();               
+            }
+            $('#timeFrom option').each(function() {
+                if ($(this).text() === timeFrom)
+                {
+                    $(this).prop('selected', true);
+                }
+            });
+
+            var timeTo;
+            if (endTime.getHours() < 10 && endTime.getMinutes() < 10)
+            {
+               timeTo = '0' + endTime.getHours() + ':' + endTime.getMinutes() + '0';
+            }
+            else if (endTime.getHours() < 10)
+            {
+                timeTo = '0' + endTime.getHours() + ':' + endTime.getMinutes();
+            }
+            else if (endTime.getMinutes() < 10) 
+            {
+                timeTo = endTime.getHours() + ':' + endTime.getMinutes() + '0';
+            }
+            else 
+            {
+                timeTo = endTime.getHours() + ':' + endTime.getMinutes();
+            }
+            $('#timeTo option').each(function() {
+                if ($(this).text() === timeTo)
+                {
+                    $(this).prop('selected', true);
+                }
+            });
+
+            
+            //console.log(color);
+            $('.color-picker-modal .active-color').removeClass('active-color');
+            $('.color-picker-modal span').each(function() {
+                
+                if ($(this).attr('data-color') === color)
+                {                  
+                    $(this).addClass('active-color');
+                }
+            });
+
+        cleanEventCreationDialog();
+    })
 
 </script>

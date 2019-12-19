@@ -31,4 +31,10 @@
         }
     });
 
+     $('#editOption').on('click', function deleteEvent(e) {
+        let contextMenu = $('.context-menu');
+        contextMenu.hide();
+        let eventObj = contextMenu[0].eventObj;
+        showEventEditor(e, eventObj);
+    });
 </script>
