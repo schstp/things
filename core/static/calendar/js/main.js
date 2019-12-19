@@ -32,6 +32,7 @@ window.RECEIVED_DESCRIPTION = "";
 window.RECEIVED_START_DATE = new Date();
 window.RECEIVED_END_DATE = new Date();
 window.ID_OF_DOUBLE_CLICKED_EVENT = -1;
+window.NOTIFICATIONS_LIST = [];
 window.byDoubleClickCalled = false;
 
 window.clickTimer = 0;
@@ -750,6 +751,15 @@ function showEventPreview(e, eventObj) {
     }
 }
 
+function rgb2hex(rgb) {
+    var rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+
+    return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+};
+
 function showEventEditor(e, eventObj) {
         let idOfDoubleClickedEvent = $(eventObj).attr('data-event-id');
         $.ajax ({
@@ -770,8 +780,10 @@ function showEventEditor(e, eventObj) {
             RECEIVED_END_DATE = new Date(data.end_date);
             RECEIVED_START_DATE = new Date(data.start_date);
             ID_OF_DOUBLE_CLICKED_EVENT = idOfDoubleClickedEvent;
+            NOTIFICATIONS_LIST = data.notifications
             byDoubleClickCalled = true;
-            //console.log(byDoubleClickCalled);
+
+            //console.log(ID_OF_DOUBLE_CLICKED_EVENT);
             
             $("#eventSettingsModal").modal('show');
             $("input[name='eventTitle']").val(RECEIVED_TITLE);
@@ -779,7 +791,36 @@ function showEventEditor(e, eventObj) {
             $('.slider').attr('value', RECEIVED_IMPORTANCE);
             sliderOutput = RECEIVED_IMPORTANCE;
 
-            $('.active-color-modal').removeClass('active-color');
+            //console.log(NOTIFICATIONS_LIST);
+
+            for (var i = 0; i < NOTIFICATIONS_LIST.length; i++)
+            {
+                let notif = new Date(NOTIFICATIONS_LIST[i]);
+                if (RECEIVED_START_DATE.getTime() - notif.getTime() === 86400000) 
+                {
+                    $('#reminderButton1d').addClass('pressed');
+                }
+                else if (RECEIVED_START_DATE.getTime() - notif.getTime() === 10800000) 
+                {
+                    $('#reminderButton3h').addClass('pressed');
+                }
+                else if (RECEIVED_START_DATE.getTime() - notif.getTime() === 3600000) 
+                {
+                    $('#reminderButton1h').addClass('pressed');
+                }
+                else if (RECEIVED_START_DATE.getTime() - notif.getTime() === 1800000) 
+                {
+                    $('#reminderButton30').addClass('pressed');
+                }
+
+            }
+
+            if (RECEIVED_COLOR.includes('rgb'))
+            {
+                RECEIVED_COLOR = rgb2hex(RECEIVED_COLOR).toUpperCase();
+            }
+
+            $('#eventSettingsModal .active-color').removeClass('active-color');
             $('.color-picker-modal span').each(function() {
                 
                 if ($(this).attr('data-color') === RECEIVED_COLOR)
@@ -790,7 +831,7 @@ function showEventEditor(e, eventObj) {
 
             var date = RECEIVED_START_DATE.getFullYear() + '-' + (RECEIVED_START_DATE.getMonth() + 1) + '-' + RECEIVED_START_DATE.getDate();
 
-            $('#dateTimeFrom').attr('value', date);
+            $('#dateTimeFrom').val(date);
 
             var timeFrom;
             if (RECEIVED_START_DATE.getHours() < 10 && RECEIVED_START_DATE.getMinutes() < 10)
@@ -858,7 +899,9 @@ function showEventEditor(e, eventObj) {
 
 function onDeleteEventClicked(event) 
 {
-    $.ajax({
+    if (confirm('Are you sure you want to delete the event?'))
+    {
+        $.ajax({
          type: 'GET',
             url: 'delete_event/',
             data: {
@@ -872,10 +915,20 @@ function onDeleteEventClicked(event)
     }
     });
     //$(event.target.parentElement.parentElement).close();
-    $(event.target).hide();
+    
     BASE_DATE.setTime(RECEIVED_START_DATE.getTime());
     let content = document.getElementById('content');
     renderCurrentMode(content);
+    let today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    $('#dateTimeFrom').val(date);
+    $('.pressed').removeClass('pressed');
+    $("input[name='eventTitle']").val("");
+    $('.textArea').val("");
+    $('#timeFrom option:first').prop('selected', true);
+    $('#timeTo option:first').prop('selected', true);
+    }
+    $(event.target).hide();
 }
 
 function buildCalendar(id, year, month) {

@@ -16,7 +16,8 @@
           <div class="col-lg-1">
             <h6 class="fromLabel">From</h6>
           </div>
-          <select id="timeFrom">
+          <div style="position: absolute; margin-left: 30%">
+          <select id="timeFrom" onmousedown="if(this.options.length>6){this.size=6;}"  onchange='this.size=0;' onblur="this.size=0;" class="selectors">
             <option>00:00</option>
             <option>00:15</option>
             <option>00:30</option>
@@ -114,10 +115,12 @@
             <option>23:30</option>
             <option>23:45</option>
           </select>
-          <div class="col-lg-0 toLabelCol">
+        </div>
+          <div class="col-lg-0 toLabelCol"  style="margin-left: 18%">
             <h6 class="toLabel">To</h6>
-          </div>         
-            <select id="timeTo">
+          </div>    
+          <div style="position: absolute; margin-left: 52%">     
+            <select id="timeTo" onmousedown="if(this.options.length>6){this.size=6;}"  onchange='this.size=0;' onblur="this.size=0;" class="selectors">
             <option>00:00</option>
             <option>00:15</option>
             <option>00:30</option>
@@ -214,7 +217,8 @@
             <option>23:15</option>
             <option>23:30</option>
             <option>23:45</option>
-          </select>        
+          </select>     
+          </div>   
         </div>
         <div class="form-control sliderBox">
           <input type="range" class="slider" min="0" max="3" step="1" id="slider">    

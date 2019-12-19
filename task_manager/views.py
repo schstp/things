@@ -171,6 +171,12 @@ def push_new_event_data(request):
                                      user=user, title=title, color=color, importance=importance, description=description)
     new_event.save()
 
+    for notification in json.loads(request.POST.get('notifications')):
+        parsed_date = datetime.strptime(notification[:19], "%Y-%m-%dT%H:%M:%S")
+        parsed_date = parsed_date + timedelta(hours=1)
+        new_notification = Notification.objects.create(event=new_event, date=parsed_date)
+        new_notification.save()
+
     data = {
         'flag': True,
         'eventId': new_event.id,
@@ -182,6 +188,9 @@ def get_id_by_doubleclick(request):
     user = request.user
     event_id = int(request.GET.get('event_id'))
     requested_event = Event.objects.get(user=user, pk=event_id)
+    notifications_list = []
+    for notification in Notification.objects.filter(event=requested_event):
+        notifications_list.append(notification.date)
     data = {
         'title': requested_event.title,
         'start_date': requested_event.start_date,
@@ -190,13 +199,14 @@ def get_id_by_doubleclick(request):
         'description': requested_event.description,
         'importance': requested_event.importance,
         'flag': True,
+        'notifications': notifications_list
     }
     return  JsonResponse(data)
 
 
 def update_double_clicked_event(request):
     user = request.user
-    event_id = int(request.POST.get('event_id'))
+    event_id = request.POST.get('event_id')
     start_date = datetime.strptime(request.POST.get('start_date')[5:25], "%b %d %Y %H:%M:%S")
     end_date = datetime.strptime(request.POST.get('end_date')[5:25], "%b %d %Y %H:%M:%S")
     title = request.POST.get('title')
@@ -212,10 +222,20 @@ def update_double_clicked_event(request):
     updated_event.description = description
     updated_event.save()
 
+    for notification in Notification.objects.filter(event=updated_event):
+        notification.delete()
+
+    for notification in json.loads(request.POST.get('notifications')):
+        parsed_date = datetime.strptime(notification[:19], "%Y-%m-%dT%H:%M:%S")
+        parsed_date = parsed_date + timedelta(hours=1)
+        new_notification = Notification.objects.create(event=updated_event, date=parsed_date)
+        new_notification.save()
+
     data = {
         'flag': True,
         'eventId': updated_event.id,
     }
+
     return JsonResponse(data)
 
 

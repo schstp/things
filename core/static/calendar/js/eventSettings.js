@@ -10,7 +10,7 @@ $(document).ready(function() {
         window.toDate = new Date();
         var colorOutput = '#7587C7';
         var textAreaOutput = "";
-        var eventTitle = "(no title)";
+        var eventTitle = "(No title)";
 
         $('.createEventButton').on('click', function(event) {
           //resetToDefaultState();
@@ -155,23 +155,44 @@ $(document).ready(function() {
 
         function resetToDefaultState() 
         {
-          var sliderOutput = '2';
-          window.fromDate = new Date();
-          window.toDate = new Date();
-          var colorOutput = '#7587C7';
-          var textAreaOutput = "";
-          var eventTitle = "(no title)";
+          sliderOutput = '2';
+          fromDate = new Date();
+          toDate = new Date();
+          colorOutput = '#7587C7';
+          textAreaOutput = "";
+          eventTitle = "(No title)";
           let today = new Date();
           var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-          $('#dateTimeFrom').attr('value', date);
+          $('#dateTimeFrom').val(date);
+          $('.pressed').removeClass('pressed');
 
           $("input[name='eventTitle']").val("");
           $('.textArea').val("");
           $('#timeFrom option:first').prop('selected', true);
           $('#timeTo option:first').prop('selected', true);
+
+          //$('.color-picker-modal .active-color').removeClass('active-color');
+
           var customNotificationCounter = 0;
           var nextIdIndex = 0;          
-        }
+        }      
+
+        $('.selectors').on('change', function (e) {
+            fromDate = new Date($('#dateTimeFrom').val() + 'T' + $('#timeFrom').val());
+            toDate = new Date($('#dateTimeFrom').val()  + 'T' + $('#timeTo').val());
+
+            if (fromDate.getTime() > toDate.getTime()) {
+                $('.selectors').css('border-color', 'red');
+                alert('start time cannot be greater than end time!');
+            } else if ((toDate.getTime() - fromDate.getTime()) / 1000 / 60 < 45) {
+              console.log((fromDate.getTime() - toDate.getTime()) / 1000 / 60);
+                alert('event duration cannot be less than 45 minutes');
+                $('.selectors').css('border-color', 'red');
+            } else {
+              $('.selectors').css('border-color', '');
+            }
+        
+        });
 
         $('#saveChangesButton').on('click', function(e) {         
             var i = 0;
@@ -186,9 +207,39 @@ $(document).ready(function() {
             fromDate = new Date($('#dateTimeFrom').val() + 'T' + $('#timeFrom').val());
             toDate = new Date($('#dateTimeFrom').val()  + 'T' + $('#timeTo').val());
             
+            let standartNotifications = [];
+            $('.pressed').each(function() {
+              if ($(this).attr('id') === 'reminderButton30') 
+              {
+                standartNotifications.push(new Date(fromDate.getTime() - 30*60*1000));
+              }
+              if ($(this).attr('id') === 'reminderButton1h') 
+              {
+                standartNotifications.push(new Date(fromDate.getTime() - 60*60*1000));
+              }
+              if ($(this).attr('id') === 'reminderButton3h') 
+              {
+                standartNotifications.push(new Date(fromDate.getTime() - 180*60*1000));
+              }
+              if ($(this).attr('id') === 'reminderButton1d') 
+              {
+                standartNotifications.push(new Date(fromDate.getTime() - 24*60*60*1000));
+              }
+            });
+
+            for (let date of standartNotifications) {
+              standartNotifications.push(date.toString());
+              standartNotifications.pop();
+            }
+            //console.log(standartNotifications);
+
             if (fromDate > toDate) 
             {
                 alert('Startig date cannot be larger than Ending');
+            }
+            else if ((toDate.getTime() - fromDate.getTime()) / 1000 / 60 < 45) 
+            {
+                alert('event duration cannot be less than 45 minutes');
             }
             else
             {
@@ -201,6 +252,7 @@ $(document).ready(function() {
             {
               byDoubleClickCalled = false;
               //console.log('called by double click');
+              console.log(standartNotifications);
               $.ajax({
                 type: 'POST',
                 url: 'update_double_clicked_event/',
@@ -210,6 +262,7 @@ $(document).ready(function() {
                   title: eventTitle,
                   start_date: JSON.stringify(fromDate.toString()),
                   end_date: JSON.stringify(toDate.toString()),
+                  notifications: JSON.stringify(standartNotifications),
                   color: colorOutput,
                   importance: sliderOutput,
                   description: textAreaOutput,
@@ -232,6 +285,7 @@ $(document).ready(function() {
                   title: eventTitle,
                   start_date: JSON.stringify(fromDate.toString()),
                   end_date: JSON.stringify(toDate.toString()),
+                  notifications: JSON.stringify(standartNotifications),
                   color: colorOutput,
                   importance: sliderOutput,
                   description: textAreaOutput,
