@@ -205,6 +205,7 @@ $(document).ready(function() {
             textAreaOutput = $('.textArea').val();
             colorOutput = $('.active-color').attr('data-color');
             fromDate = new Date($('#dateTimeFrom').val() + 'T' + $('#timeFrom').val());
+            BASE_DATE.setTime(fromDate.getTime());
             toDate = new Date($('#dateTimeFrom').val()  + 'T' + $('#timeTo').val());
             
             let standartNotifications = [];
@@ -241,72 +242,65 @@ $(document).ready(function() {
             {
                 alert('event duration cannot be less than 45 minutes');
             }
-            else
-            {
-               if ($("input[name='eventTitle']").val() !== "") 
-            {
-                eventTitle = $("input[name='eventTitle']").val();
-            }
-
-            if (byDoubleClickCalled) 
-            {
-              byDoubleClickCalled = false;
-              //console.log('called by double click');
-              console.log(standartNotifications);
-              $.ajax({
-                type: 'POST',
-                url: 'update_double_clicked_event/',
-                data: {
-                  csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
-                  event_id: ID_OF_DOUBLE_CLICKED_EVENT,
-                  title: eventTitle,
-                  start_date: JSON.stringify(fromDate.toString()),
-                  end_date: JSON.stringify(toDate.toString()),
-                  notifications: JSON.stringify(standartNotifications),
-                  color: colorOutput,
-                  importance: sliderOutput,
-                  description: textAreaOutput,
-                },
-                dataType: 'json',
-                success: function (data) {
-                  if (data.flag) {
-                  console.log('SUCCESS! [changes have been saved]');
-                  }
+            else {
+                if ($("input[name='eventTitle']").val() !== "") {
+                    eventTitle = $("input[name='eventTitle']").val();
                 }
-              });
-            }            
-            else 
-            {
-              $.ajax({
-                type: 'POST',
-                url: 'push_new_event_data/',
-                data: {
-                  csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
-                  title: eventTitle,
-                  start_date: JSON.stringify(fromDate.toString()),
-                  end_date: JSON.stringify(toDate.toString()),
-                  notifications: JSON.stringify(standartNotifications),
-                  color: colorOutput,
-                  importance: sliderOutput,
-                  description: textAreaOutput,
-                },
-                dataType: 'json',
-                success: function (data) {
-                  if (data.flag) {
-                  console.log('SUCCESS! [changes have been saved]');
-                  }
+
+                if (byDoubleClickCalled) {
+                    byDoubleClickCalled = false;
+
+                    console.log(standartNotifications);
+                    $.ajax({
+                        type: 'POST',
+                        url: 'update_double_clicked_event/',
+                        data: {
+                            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                            event_id: ID_OF_DOUBLE_CLICKED_EVENT,
+                            title: eventTitle,
+                            start_date: JSON.stringify(fromDate.toString()),
+                            end_date: JSON.stringify(toDate.toString()),
+                            notifications: JSON.stringify(standartNotifications),
+                            color: colorOutput,
+                            importance: sliderOutput,
+                            description: textAreaOutput,
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.flag) {
+                                console.log('SUCCESS! [changes have been saved]');
+                            }
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'push_new_event_data/',
+                        data: {
+                            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                            title: eventTitle,
+                            start_date: JSON.stringify(fromDate.toString()),
+                            end_date: JSON.stringify(toDate.toString()),
+                            notifications: JSON.stringify(standartNotifications),
+                            color: colorOutput,
+                            importance: sliderOutput,
+                            description: textAreaOutput,
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.flag) {
+                                console.log('SUCCESS! [changes have been saved]');
+                            }
+                        }
+                    });
                 }
-            });
+
+
+                $('#deleteEventButton').remove();
+                resetToDefaultState();
+
+                let content = document.getElementById('content');
+                renderCurrentMode(content);
             }
-            }
-
-            $('#deleteEventButton').remove();
-            resetToDefaultState();
-
-            BASE_DATE.setTime(fromDate.getTime());
-            let content = document.getElementById('content');
-            console.log(content);
-            renderCurrentMode(content);
-
         });
-})
+});

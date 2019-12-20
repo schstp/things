@@ -226,3 +226,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border: solid 1px #2f2f2f;
     box-shadow: 0 4px 8px 0 rgba(0, 136, 224, 0.31), 0 6px 20px 0 rgba(0, 136, 224, 0.3);
 }
+
+#timeFrom {
+	position:relative;
+	z-index: 1;
+}
+
+#timeTo {
+	position: relative;
+	z-index: 1;
+}

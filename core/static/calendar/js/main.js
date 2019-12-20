@@ -520,7 +520,7 @@ function createTimestampsForGeneratedEvent(newEvent) {
 function showEventCreationDialog(e) {
     let eventCreationDialog = $('#eventCreationDialog');
     let {startDate, endDate} = createTimestampsForGeneratedEvent(newEvent);
-    startDate.toLocaleDateString('en-CA') + " ---- " + endDate.toLocaleDateString('en-CA');
+
     newEvent.classList.toggle('cursor-pointer');
 
     // timer pikers preparation
@@ -690,7 +690,7 @@ function saveNewEvent() {
         notifications.push(date.toString());
         notifications.pop();
     }
-    console.log(notifications);
+
     let title = document.querySelector('#eventCreationDialog .title input').value;
     title = title.length !== 0 ? title : "(No title)";
     newEvent.querySelector(".event-title").innerText = title;
@@ -830,10 +830,10 @@ function showEventEditor(e, eventObj) {
                 }
             });
 
-            var date = RECEIVED_START_DATE.getFullYear() + '-' + (RECEIVED_START_DATE.getMonth() + 1) + '-' + RECEIVED_START_DATE.getDate();
+            var date = RECEIVED_START_DATE.toLocaleDateString('en-CA')
 
             $('#dateTimeFrom').val(date);
-
+            console.log( $('#dateTimeFrom').val());
             var timeFrom;
             if (RECEIVED_START_DATE.getHours() < 10 && RECEIVED_START_DATE.getMinutes() < 10)
             {
